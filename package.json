@@ -30,6 +30,7 @@
   },
   "devDependencies": {
     "@types/express": "^4.17.2",
+    "@types/faker": "^4.1.9",
     "@types/jest": "^24.0.25",
     "@types/lodash": "^4.14.149",
     "@types/node": "^13.1.6",
