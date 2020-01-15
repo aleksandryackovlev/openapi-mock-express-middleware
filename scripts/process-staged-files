@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+
+files=()
+
+while IFS= read -r file; do
+  files+=("$file")
+done < <(git diff --cached --name-only --diff-filter=ACMR "src/*.ts")
+
+if [[ "${#files[@]}" -eq 0 ]]; then
+  exit 0
+fi
+
+echo "${files[@]}" | xargs ./node_modules/.bin/prettier --write
+echo "${files[@]}" | xargs git add
+echo "${files[@]}" | xargs ./node_modules/.bin/eslint
