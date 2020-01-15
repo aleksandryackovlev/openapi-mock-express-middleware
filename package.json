@@ -2,23 +2,53 @@
   "name": "openapi-mock-express-middleware",
   "version": "0.0.0",
   "description": "Openapi mock middleware",
-  "main": "index.js",
+  "main": "dist/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "yarn build -w",
+    "build": "npm run build:ts",
+    "build:ts": "tsc",
+    "watch:ts": "tsc -w",
+    "watch:node": "nodemon dist/index.js",
+    "watch": "concurrently -k -p \"[{name}]\" -n \"TypeScript,Node\" -c \"cyan.bold,green.bold\" \"npm run watch:ts\" \"npm run watch:node\"",
+    "lint": "eslint .",
+    "pretest": "npm run lint",
+    "test": "jest --forceExit --coverage --verbose",
+    "test:watch": "npm run test -- --watchAll",
+    "security": "npm audit",
+    "release": "standard-version",
+    "commit": "git-cz"
+  },
+  "engines": {
+    "node": ">= 10.13.0"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/aleksandryackovlev/openapi-mock-express-middleware.git"
   },
   "keywords": [
-    "openapi"
+    "codegen",
+    "openapi",
+    "swagger",
+    "typescript",
+    "fetch",
+    "client",
+    "sdk",
+    "mock",
+    "server",
+    "express",
+    "webpack"
   ],
-  "author": "Aleksandr Yackovlev",
+  "author": "Aleksandr Yackovlev <aleksandryackovlev@yandex.ru>",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/aleksandryackovlev/openapi-mock-express-middleware/issues"
   },
   "homepage": "https://github.com/aleksandryackovlev/openapi-mock-express-middleware#readme",
+  "files": [
+    "dist/",
+    "lib/",
+    "index.js"
+  ],
   "dependencies": {
     "chokidar": "^3.3.1",
     "express": "^4.17.1",
@@ -34,11 +64,33 @@
     "@types/jest": "^24.0.25",
     "@types/lodash": "^4.14.149",
     "@types/node": "^13.1.6",
+    "@typescript-eslint/eslint-plugin": "^2.16.0",
+    "@typescript-eslint/parser": "^2.16.0",
+    "commitizen": "^4.0.3",
+    "concurrently": "^5.0.2",
+    "cz-conventional-changelog": "^3.0.2",
     "eslint": "^6.8.0",
+    "eslint-config-airbnb-base": "^14.0.0",
+    "eslint-config-prettier": "^6.9.0",
+    "eslint-plugin-import": "^2.20.0",
+    "eslint-plugin-prettier": "^3.1.2",
+    "husky": "^4.0.9",
     "jest": "^24.9.0",
     "nodemon": "^2.0.2",
+    "prettier": "^1.19.1",
+    "standard-version": "^7.0.1",
     "ts-jest": "^24.3.0",
     "ts-node": "^8.6.2",
     "typescript": "^3.7.4"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "./scripts/process-staged-files"
+    }
+  },
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog"
+    }
   }
 }
