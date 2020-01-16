@@ -36,9 +36,9 @@ const createMiddleware = ({ file, locale = 'en' }: Options): express.Router => {
   });
 
   router.use((err: Error, req: express.Request, res: express.Response): void => {
-    if (err && err.stack) {
-      console.error(err.stack);
-    }
+    // if (err && err.stack) {
+    //   console.error(err.stack);
+    // }
 
     res.status(500).send('Something broke!');
   });
@@ -46,11 +46,11 @@ const createMiddleware = ({ file, locale = 'en' }: Options): express.Router => {
   return router;
 };
 
-const app = express();
-const port = 3000;
+// const app = express();
+// const port = 3000;
 
-app.use('/api', createMiddleware({ file: 'test' }));
+// app.use('/api', createMiddleware({ file: 'test' }));
 
-app.listen(port, () => console.log(`App is running on port ${port}`));
+// app.listen(port, () => console.log(`App is running on port ${port}`));
 
 export default createMiddleware;
