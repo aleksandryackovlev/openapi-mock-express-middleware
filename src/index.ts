@@ -1,56 +1,38 @@
+import fs from 'fs';
+
 import express from 'express';
-import methodOverride from 'method-override';
+
+import createRouter from './router';
+import Operations from './operations';
 
 export interface Options {
   file: string;
   locale?: string;
 }
 
-export interface Operation {
-  method: 'GET' | 'POST' | 'PUT' | 'DELETE' | 'OPTIONS' | 'HEAD' | 'PATCH';
-  pathPattern: string;
-  pathRegexp: RegExp;
-}
-
 const createMiddleware = ({ file, locale = 'en' }: Options): express.Router => {
-  const router = express.Router();
+  if (!fs.existsSync(file)) {
+    throw new Error('File with the openapi docs does not exist');
+  }
 
-  const operations: Operation[] = [];
-  router.use(express.urlencoded({ extended: true }));
-  router.use(express.json());
-  router.use(methodOverride());
+  const router = createRouter();
+  const operations = new Operations({ file, locale });
 
-  router.use('/{0,}', (req, res, next) => {
-    const resultOperation: Operation | undefined = operations.find(
-      ({ method: operationMethod, pathRegexp }) =>
-        pathRegexp.exec(req.path) && req.method === operationMethod
-    );
+  router.use('/{0,}', async (req, res, next) => {
+    const operation = await operations.match(req);
 
-    return resultOperation
-      ? res.json({ file, locale, pattern: resultOperation.pathPattern })
-      : next();
+    return operation ? res.json(operation.generateResponse()) : next();
   });
 
   router.use((req, res) => {
-    res.status(404).send("Sorry can't find that!");
+    res.status(404).send({ message: 'Not found' });
   });
 
   router.use((err: Error, req: express.Request, res: express.Response): void => {
-    // if (err && err.stack) {
-    //   console.error(err.stack);
-    // }
-
-    res.status(500).send('Something broke!');
+    res.status(500).send({ message: 'Something broke!' });
   });
 
   return router;
 };
-
-// const app = express();
-// const port = 3000;
-
-// app.use('/api', createMiddleware({ file: 'test' }));
-
-// app.listen(port, () => console.log(`App is running on port ${port}`));
 
 export default createMiddleware;
