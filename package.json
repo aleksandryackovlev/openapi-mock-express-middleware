@@ -10,7 +10,7 @@
     "watch:ts": "tsc -w",
     "watch:node": "nodemon dist/index.js",
     "watch": "concurrently -k -p \"[{name}]\" -n \"TypeScript,Node\" -c \"cyan.bold,green.bold\" \"npm run watch:ts\" \"npm run watch:node\"",
-    "lint": "eslint .",
+    "lint": "eslint --ext=ts .",
     "pretest": "npm run lint",
     "test": "jest --forceExit --coverage --verbose",
     "test:watch": "npm run test -- --watchAll",
