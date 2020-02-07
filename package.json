@@ -4,7 +4,7 @@
   "description": "Openapi mock middleware",
   "main": "dist/index.js",
   "scripts": {
-    "start": "yarn build -w",
+    "start": "npm run build -w",
     "build": "npm run build:ts",
     "build:ts": "tsc",
     "watch:ts": "tsc -w",
@@ -78,6 +78,7 @@
     "eslint-plugin-prettier": "^3.1.2",
     "husky": "^4.0.10",
     "jest": "^24.9.0",
+    "json-schema-faker-types": "^0.1.1",
     "nodemon": "^2.0.2",
     "prettier": "^1.19.1",
     "standard-version": "^7.0.1",
