@@ -1,4 +1,5 @@
 import jsf, { JSFResult, JSONSchema } from 'json-schema-faker';
+import { OpenAPIV3 } from 'openapi-types';
 import faker from 'faker';
 import { pathToRegexp } from 'path-to-regexp';
 
@@ -19,14 +20,16 @@ jsf.define('examples', (value) => {
   return '';
 });
 
+function isReferenceObject(response: unknown): response is OpenAPIV3.ReferenceObject {
+  return !!response && typeof response === 'object' && response !== null && !('$ref' in response);
+}
+
 class Operation {
   method: string;
 
   pathRegexp: RegExp;
 
-  operation: {
-    responses?: object;
-  };
+  operation: OpenAPIV3.OperationObject;
 
   constructor({
     method,
@@ -35,9 +38,7 @@ class Operation {
   }: {
     path: string;
     method: string;
-    operation: {
-      responses?: object;
-    };
+    operation: OpenAPIV3.OperationObject;
   }) {
     const pathPattern = path.replace(/\{([^/}]+)\}/g, (p1: string, p2: string): string => `:${p2}`);
 
@@ -51,22 +52,29 @@ class Operation {
     if (this.operation && this.operation.responses) {
       if (
         this.operation.responses['200'] &&
+        !isReferenceObject(this.operation.responses['200']) &&
         this.operation.responses['200'].content &&
         this.operation.responses['200'].content['application/json'] &&
         this.operation.responses['200'].content['application/json'].schema
       ) {
         const response = this.operation.responses['200'].content['application/json'];
-        const { schema } = response;
+        const { schema, example, examples } = response;
 
-        if (response.example) {
-          schema.example = response.example;
+        if (schema && !isReferenceObject(schema)) {
+          const resultSchema: JSONSchema = schema as JSONSchema;
+
+          if (example) {
+            resultSchema.example = example;
+          }
+
+          if (examples) {
+            resultSchema.examples = examples;
+          }
+
+          return resultSchema;
         }
 
-        if (response.examples) {
-          schema.examples = response.examples;
-        }
-
-        return schema;
+        return {};
       }
 
       return {};

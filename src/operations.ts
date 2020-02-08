@@ -1,5 +1,7 @@
 import path from 'path';
 
+import { OpenAPIV3 } from 'openapi-types';
+
 import chokidar from 'chokidar';
 import { Request } from 'express';
 import SwaggerParser from 'swagger-parser';
@@ -33,7 +35,7 @@ class Operations {
   async compile(): Promise<void> {
     const api = await SwaggerParser.dereference(this.file);
 
-    this.operations = toPairs(api.paths).reduce(
+    this.operations = toPairs(api.paths as OpenAPIV3.PathsObject).reduce(
       (result: Operation[], [pathName, pathOperations]) => [
         ...result,
         ...this.compileFromPath(pathName, pathOperations),
@@ -43,7 +45,7 @@ class Operations {
   }
 
   /* eslint-disable class-methods-use-this */
-  compileFromPath(pathName: string, pathOperations: object): Operation[] {
+  compileFromPath(pathName: string, pathOperations: OpenAPIV3.PathItemObject): Operation[] {
     return toPairs(pathOperations).map(
       ([method, operation]) => new Operation({ method, path: pathName, operation })
     );
