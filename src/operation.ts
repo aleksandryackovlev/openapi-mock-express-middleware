@@ -1,5 +1,7 @@
-import jsf, { JSFResult, JSONSchema } from 'json-schema-faker';
+import jsf, { JSONSchema } from 'json-schema-faker';
 import { OpenAPIV3 } from 'openapi-types';
+import express from 'express';
+
 import faker from 'faker';
 import { pathToRegexp } from 'path-to-regexp';
 
@@ -21,7 +23,7 @@ jsf.define('examples', (value) => {
 });
 
 function isReferenceObject(response: unknown): response is OpenAPIV3.ReferenceObject {
-  return !!response && typeof response === 'object' && response !== null && !('$ref' in response);
+  return typeof response === 'object' && response !== null && '$ref' in response;
 }
 
 class Operation {
@@ -48,16 +50,17 @@ class Operation {
     this.pathRegexp = pathToRegexp(pathPattern);
   }
 
-  getResponseSchema(): JSONSchema {
+  getResponseSchema(): JSONSchema | null {
     if (this.operation && this.operation.responses) {
+      const { responses } = this.operation;
       if (
-        this.operation.responses['200'] &&
-        !isReferenceObject(this.operation.responses['200']) &&
-        this.operation.responses['200'].content &&
-        this.operation.responses['200'].content['application/json'] &&
-        this.operation.responses['200'].content['application/json'].schema
+        responses['200'] &&
+        !isReferenceObject(responses['200']) &&
+        responses['200'].content &&
+        responses['200'].content['application/json'] &&
+        responses['200'].content['application/json'].schema
       ) {
-        const response = this.operation.responses['200'].content['application/json'];
+        const response = responses['200'].content['application/json'];
         const { schema, example, examples } = response;
 
         if (schema && !isReferenceObject(schema)) {
@@ -74,18 +77,26 @@ class Operation {
           return resultSchema;
         }
 
-        return {};
+        return null;
       }
 
-      return {};
+      return null;
     }
 
-    return {};
+    return null;
   }
 
-  generateResponse(): JSFResult {
+  // validateRequest() {
+  // }
+
+  // isRequestAuthorized(): boolean {
+  //   return true;
+  // }
+
+  generateResponse(req: express.Request, res: express.Response): express.Response {
     const responseSchema = this.getResponseSchema();
-    return responseSchema ? jsf.generate(responseSchema) : {};
+
+    return res.json(responseSchema ? jsf.generate(responseSchema) : {});
   }
 }
 

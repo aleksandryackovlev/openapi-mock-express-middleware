@@ -21,7 +21,7 @@ const createMiddleware = ({ file, locale = 'en' }: Options): express.Router => {
   router.use('/{0,}', async (req, res, next) => {
     const operation = await operations.match(req);
 
-    return operation ? res.json(operation.generateResponse()) : next();
+    return operation ? operation.generateResponse(req, res) : next();
   });
 
   router.use((req, res) => {
