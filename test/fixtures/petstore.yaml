@@ -32,36 +32,66 @@ tags:
     url: http://swagger.io
 paths:
   /pet/someOperation:
-    post:
+    get:
       tags:
       - pet
       summary: Some operation
       description: Some operation
       operationId: someOperation
-      requestBody:
-        content:
-          application/x-www-form-urlencoded:
-            schema:
-              type: object
-              properties:
-                name:
-                  type: string
-                  description: Name
-                meta:
-                  type: object
-                  description: meta information
-                  properties:
-                    title:
-                      type: string
-                    length:
-                      type: number
       responses:
         200:
           description: successful operation
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ApiResponse'
+                type: object
+                required:
+                  - name
+                  - photo
+                properties:
+                  name:
+                    type: string
+                    example: inline example name
+                  photo:
+                    type: string
+                    example: inline example photo
+                example:
+                    name: single first example name
+                    photo: http://some-url-first.com
+                examples:
+                  first:
+                    value:
+                      name: first example name
+                      photo: http://some-url-first.com
+                  second:
+                    value:
+                      name: second example name
+                      photo: http://some-url-second.com
+
+  /pet/someOtherOperation:
+    get:
+      tags:
+      - pet
+      summary: Some operation
+      description: Some operation
+      operationId: someOtherOperation
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - name
+                  - photo
+                properties:
+                  name:
+                    type: string
+                    faker: name.findName
+                  photo:
+                    type: string
+                    faker: image.imageUrl
 
   /pet/{petId}:
     get:
@@ -109,9 +139,20 @@ paths:
         schema:
           type: integer
           format: int64
-      requestBody:
-        $ref: '#/components/requestBodies/Error'
       responses:
+        200:
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - id
+                  - name
+                properties:
+                  id: 
+                    type: integer
+                  name: 
+                    type: string
         405:
           description: Invalid input
           content: {}
@@ -690,6 +731,9 @@ components:
             type: string
             xml:
               name: photoUrl
+          example:
+            - http://test.test
+            - http://test1.test1
         tags:
           type: array
           xml:
