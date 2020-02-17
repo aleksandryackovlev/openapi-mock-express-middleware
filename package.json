@@ -13,7 +13,7 @@
     "lint": "eslint --ext=ts .",
     "pretest": "npm run lint",
     "test": "jest --forceExit --coverage --verbose",
-    "test:watch": "npm run test -- --watchAll",
+    "test:watch": "jest --forceExit --verbose  --watchAll",
     "security": "npm audit",
     "release": "standard-version",
     "commit": "git-cz"
