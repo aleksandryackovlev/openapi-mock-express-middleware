@@ -5,7 +5,7 @@ import { OpenAPIV3 } from 'openapi-types';
 import chokidar from 'chokidar';
 import { Request } from 'express';
 import SwaggerParser from 'swagger-parser';
-import { toPairs } from 'lodash';
+import { get, toPairs } from 'lodash';
 
 import Operation from './operation';
 
@@ -38,16 +38,20 @@ class Operations {
     this.operations = toPairs(api.paths as OpenAPIV3.PathsObject).reduce(
       (result: Operation[], [pathName, pathOperations]) => [
         ...result,
-        ...this.compileFromPath(pathName, pathOperations),
+        ...this.compileFromPath(pathName, pathOperations, get(api, 'components.securitySchemes')),
       ],
       []
     );
   }
 
   /* eslint-disable class-methods-use-this */
-  compileFromPath(pathName: string, pathOperations: OpenAPIV3.PathItemObject): Operation[] {
+  compileFromPath(
+    pathName: string,
+    pathOperations: OpenAPIV3.PathItemObject,
+    securitySchemes?: { [key: string]: OpenAPIV3.SecuritySchemeObject }
+  ): Operation[] {
     return toPairs(pathOperations).map(
-      ([method, operation]) => new Operation({ method, path: pathName, operation })
+      ([method, operation]) => new Operation({ method, path: pathName, operation, securitySchemes })
     );
   }
   /* eslint-enable class-methods-use-this */
