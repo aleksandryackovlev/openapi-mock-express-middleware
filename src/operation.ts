@@ -1,6 +1,7 @@
 import jsf, { JSONSchema } from 'json-schema-faker';
 import { OpenAPIV3 } from 'openapi-types';
 import express from 'express';
+import Ajv from 'ajv';
 import { has, get } from 'lodash';
 
 import faker from 'faker';
@@ -22,6 +23,8 @@ jsf.define('examples', (value) => {
 
   return '';
 });
+
+const ajv = new Ajv({ unknownFormats: ['int32', 'int64', 'binary'] });
 
 function isReferenceObject(response: unknown): response is OpenAPIV3.ReferenceObject {
   return typeof response === 'object' && response !== null && '$ref' in response;
@@ -153,11 +156,36 @@ class Operation {
     return true;
   }
 
+  // isParamsValid(): boolean {
+  //   return true;
+  // }
+
+  isBodyValid(req: express.Request): boolean {
+    if (has(this.operation, ['requestBody', 'content', 'application/json', 'schema'])) {
+      const isBodyValid = ajv.validate(
+        get(this.operation, ['requestBody', 'content', 'application/json', 'schema']),
+        req.body
+      );
+
+      return !!isBodyValid;
+    }
+
+    return true;
+  }
+
+  isRequestValid(req: express.Request): boolean {
+    return /* this.isParamsValid() && */ this.isBodyValid(req);
+  }
+
   generateResponse(req: express.Request, res: express.Response): express.Response {
     const responseSchema = this.getResponseSchema();
 
     if (!this.isRequestAuthorized(req)) {
       return res.status(401).json({ message: 'Unauthorized request' });
+    }
+
+    if (!this.isRequestValid(req)) {
+      return res.status(400).json({ message: 'Bad request' });
     }
 
     return res.json(responseSchema ? jsf.generate(responseSchema) : {});

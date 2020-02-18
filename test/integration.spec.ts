@@ -53,6 +53,15 @@ describe('middleware', () => {
     expect(response.body).toHaveProperty('message', 'Not found');
   });
 
+  it('should return an 400 error response if request body is not valid', async () => {
+    const response = await request
+      .post('/api/pet')
+      .set('Authorization', 'Bearer key')
+      .send({ name: 'doggie', photoUrls: ['http://some-url.com'], status: 'incorrect' });
+
+    expect(response.status).toBe(400);
+  });
+
   it.skip('should return an 400 error response if path params are not valid', async () => {
     const response = await request.get('/api/pet/2');
 
@@ -71,13 +80,13 @@ describe('middleware', () => {
     expect(response.status).toBe(200);
   });
 
-  it.skip('should return an 401 error response if security schema params are not valid', async () => {
+  it('should return an 401 error response if security schema params are not valid', async () => {
     const response = await request.get('/api/pet/2');
 
-    expect(response.status).toBe(200);
+    expect(response.status).toBe(401);
   });
 
-  it.skip('should return an 400 error response on invalid content-type response', async () => {
+  it.skip('should return an 400 error response on invalid content-type request', async () => {
     const response = await request.get('/api/pet/2');
 
     expect(response.status).toBe(200);
