@@ -6,7 +6,7 @@ const request = supertest(app);
 
 describe('middleware', () => {
   it("should return fields' example values if they are set", async () => {
-    const response = await request.get('/api/pet/2');
+    const response = await request.get('/api/pet/2').set('api_key', 'someKey');
 
     expect(response.status).toBe(200);
     expect(response.body).toHaveProperty('name', 'doggie');
@@ -35,7 +35,7 @@ describe('middleware', () => {
   });
 
   it('should return values of the given faker type if they are specified', async () => {
-    const response = await request.post('/api/pet/2');
+    const response = await request.post('/api/pet/2').set('Authorization', 'Bearer key');
 
     expect(response.status).toBe(200);
 

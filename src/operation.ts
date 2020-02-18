@@ -1,6 +1,7 @@
 import jsf, { JSONSchema } from 'json-schema-faker';
 import { OpenAPIV3 } from 'openapi-types';
 import express from 'express';
+import { has, get } from 'lodash';
 
 import faker from 'faker';
 import { pathToRegexp } from 'path-to-regexp';
@@ -33,51 +34,49 @@ class Operation {
 
   operation: OpenAPIV3.OperationObject;
 
+  securitySchemes: { [key: string]: OpenAPIV3.SecuritySchemeObject } | null;
+
   constructor({
     method,
     path,
     operation,
+    securitySchemes,
   }: {
     path: string;
     method: string;
     operation: OpenAPIV3.OperationObject;
+    securitySchemes?: { [key: string]: OpenAPIV3.SecuritySchemeObject };
   }) {
     const pathPattern = path.replace(/\{([^/}]+)\}/g, (p1: string, p2: string): string => `:${p2}`);
 
     this.method = method.toUpperCase();
     this.operation = operation;
+    this.securitySchemes = securitySchemes || null;
 
     this.pathRegexp = pathToRegexp(pathPattern);
   }
 
   getResponseSchema(): JSONSchema | null {
-    if (this.operation && this.operation.responses) {
-      const { responses } = this.operation;
-      if (
-        responses['200'] &&
-        !isReferenceObject(responses['200']) &&
-        responses['200'].content &&
-        responses['200'].content['application/json'] &&
-        responses['200'].content['application/json'].schema
-      ) {
-        const response = responses['200'].content['application/json'];
-        const { schema, example, examples } = response;
+    if (has(this.operation, ['responses', '200', 'content', 'application/json', 'schema'])) {
+      const { schema, example, examples } = get(this.operation, [
+        'responses',
+        '200',
+        'content',
+        'application/json',
+      ]);
 
-        if (schema && !isReferenceObject(schema)) {
-          const resultSchema: JSONSchema = schema as JSONSchema;
+      if (schema && !isReferenceObject(schema)) {
+        const resultSchema: JSONSchema = schema as JSONSchema;
 
-          if (example) {
-            resultSchema.example = example;
-          }
-
-          if (examples) {
-            resultSchema.examples = examples;
-          }
-
-          return resultSchema;
+        if (example) {
+          resultSchema.example = example;
         }
 
-        return null;
+        if (examples) {
+          resultSchema.examples = examples;
+        }
+
+        return resultSchema;
       }
 
       return null;
@@ -86,15 +85,80 @@ class Operation {
     return null;
   }
 
-  // validateRequest() {
-  // }
+  getSecurityRequirements(): OpenAPIV3.SecurityRequirementObject[] {
+    const requirements: OpenAPIV3.SecurityRequirementObject[] = this.operation.security || [];
 
-  // isRequestAuthorized(): boolean {
-  //   return true;
-  // }
+    return requirements;
+  }
+
+  isRequestAuthorized(req: express.Request): boolean {
+    const securityRequirements = this.getSecurityRequirements();
+    if (
+      securityRequirements.some((schemes) => {
+        if (schemes && this.securitySchemes) {
+          return Object.keys(schemes).some((scheme) => {
+            if (this.securitySchemes && this.securitySchemes[scheme]) {
+              const securityScheme = this.securitySchemes[scheme];
+              switch (securityScheme.type) {
+                case 'apiKey':
+                  if (securityScheme.in === 'header') {
+                    return req.header(securityScheme.name) === undefined;
+                  }
+
+                  if (securityScheme.in === 'query') {
+                    return req.query[securityScheme.name] === undefined;
+                  }
+
+                  if (securityScheme.in === 'cookie') {
+                    return req.cookies[securityScheme.name] === undefined;
+                  }
+
+                  return false;
+
+                case 'http': {
+                  const authHeader = req.header('Authorization');
+                  if (!authHeader) {
+                    return true;
+                  }
+
+                  return securityScheme.scheme === 'basic'
+                    ? !authHeader.startsWith('Basic')
+                    : !authHeader.startsWith('Bearer');
+                }
+
+                case 'oauth2': {
+                  const authHeader = req.header('Authorization');
+                  if (!authHeader) {
+                    return true;
+                  }
+
+                  return !authHeader.startsWith('Bearer');
+                }
+
+                default:
+                  return false;
+              }
+            }
+
+            return false;
+          });
+        }
+
+        return false;
+      })
+    ) {
+      return false;
+    }
+
+    return true;
+  }
 
   generateResponse(req: express.Request, res: express.Response): express.Response {
     const responseSchema = this.getResponseSchema();
+
+    if (!this.isRequestAuthorized(req)) {
+      return res.status(401).json({ message: 'Unauthorized request' });
+    }
 
     return res.json(responseSchema ? jsf.generate(responseSchema) : {});
   }
