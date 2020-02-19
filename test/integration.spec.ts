@@ -68,16 +68,18 @@ describe('middleware', () => {
     expect(response.status).toBe(200);
   });
 
-  it.skip('should return an 400 error response if query params are not valid', async () => {
-    const response = await request.get('/api/pet/2');
+  it('should return an 400 error response if query params are not valid', async () => {
+    const response = await request
+      .get('/api/pet/findByStatus?status[]=string&status[]=available')
+      .set('Authorization', 'Bearer key');
 
-    expect(response.status).toBe(200);
+    expect(response.status).toBe(400);
   });
 
-  it.skip('should return an 400 error response if headers params are not valid', async () => {
-    const response = await request.get('/api/pet/2');
+  it('should return an 400 error response if headers params are not valid', async () => {
+    const response = await request.delete('/api/pet/2').set('Authorization', 'Bearer key');
 
-    expect(response.status).toBe(200);
+    expect(response.status).toBe(400);
   });
 
   it('should return an 401 error response if security schema params are not valid', async () => {

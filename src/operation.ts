@@ -2,7 +2,7 @@ import jsf, { JSONSchema } from 'json-schema-faker';
 import { OpenAPIV3 } from 'openapi-types';
 import express from 'express';
 import Ajv from 'ajv';
-import { has, get } from 'lodash';
+import { has, get, set } from 'lodash';
 
 import faker from 'faker';
 import { pathToRegexp } from 'path-to-regexp';
@@ -156,9 +156,69 @@ class Operation {
     return true;
   }
 
-  // isParamsValid(): boolean {
-  //   return true;
-  // }
+  isParamsValid(req: express.Request): boolean {
+    const schemas: {
+      header: JSONSchema;
+      query: JSONSchema;
+      path: JSONSchema;
+    } = {
+      header: {
+        type: 'object',
+        required: [],
+      },
+      query: {
+        type: 'object',
+        additionalProperties: false,
+        required: [],
+      },
+      path: {
+        type: 'object',
+        additionalProperties: false,
+        required: [],
+      },
+    };
+
+    const parameters = get(this.operation, ['parameters']);
+
+    if (parameters) {
+      parameters.forEach((parameter) => {
+        if (
+          parameter &&
+          !isReferenceObject(parameter) &&
+          (parameter.in === 'header' || parameter.in === 'query' || parameter.in === 'path') &&
+          schemas[parameter.in]
+        ) {
+          const prevRequired: string[] = schemas[parameter.in].required || [];
+
+          set(schemas, [parameter.in, 'properties', parameter.name], parameter.schema);
+          set(schemas, [parameter.in, 'required'], [...prevRequired, parameter.name]);
+        }
+      });
+
+      if (schemas.header.properties && Object.keys(schemas.header.properties)) {
+        const isHeadersValid = ajv.validate(schemas.header, req.headers);
+
+        if (!isHeadersValid) {
+          return false;
+        }
+      }
+
+      if (
+        (schemas.query.properties && Object.keys(schemas.query.properties)) ||
+        (req.query && Object.keys(req.query))
+      ) {
+        const isQueryValid = ajv.validate(schemas.query, req.query);
+
+        if (!isQueryValid) {
+          return false;
+        }
+      }
+
+      return true;
+    }
+
+    return true;
+  }
 
   isBodyValid(req: express.Request): boolean {
     if (has(this.operation, ['requestBody', 'content', 'application/json', 'schema'])) {
@@ -174,7 +234,7 @@ class Operation {
   }
 
   isRequestValid(req: express.Request): boolean {
-    return /* this.isParamsValid() && */ this.isBodyValid(req);
+    return this.isParamsValid(req) && this.isBodyValid(req);
   }
 
   generateResponse(req: express.Request, res: express.Response): express.Response {
