@@ -62,10 +62,10 @@ describe('middleware', () => {
     expect(response.status).toBe(400);
   });
 
-  it.skip('should return an 400 error response if path params are not valid', async () => {
-    const response = await request.get('/api/pet/2');
+  it('should return an 400 error response if path params are not valid', async () => {
+    const response = await request.get('/api/pet/foo').set('api_key', 'someKey');
 
-    expect(response.status).toBe(200);
+    expect(response.status).toBe(400);
   });
 
   it('should return an 400 error response if query params are not valid', async () => {

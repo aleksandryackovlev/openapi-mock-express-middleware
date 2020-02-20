@@ -5,7 +5,7 @@ import Ajv from 'ajv';
 import { has, get, set } from 'lodash';
 
 import faker from 'faker';
-import { pathToRegexp } from 'path-to-regexp';
+import { pathToRegexp, match } from 'path-to-regexp';
 
 jsf.extend('faker', () => {
   // faker.locale = locale;
@@ -24,7 +24,7 @@ jsf.define('examples', (value) => {
   return '';
 });
 
-const ajv = new Ajv({ unknownFormats: ['int32', 'int64', 'binary'] });
+const ajv = new Ajv({ coerceTypes: true, unknownFormats: ['int32', 'int64', 'binary'] });
 
 function isReferenceObject(response: unknown): response is OpenAPIV3.ReferenceObject {
   return typeof response === 'object' && response !== null && '$ref' in response;
@@ -36,6 +36,8 @@ class Operation {
   pathRegexp: RegExp;
 
   operation: OpenAPIV3.OperationObject;
+
+  pathPattern: string;
 
   securitySchemes: { [key: string]: OpenAPIV3.SecuritySchemeObject } | null;
 
@@ -50,13 +52,13 @@ class Operation {
     operation: OpenAPIV3.OperationObject;
     securitySchemes?: { [key: string]: OpenAPIV3.SecuritySchemeObject };
   }) {
-    const pathPattern = path.replace(/\{([^/}]+)\}/g, (p1: string, p2: string): string => `:${p2}`);
+    this.pathPattern = path.replace(/\{([^/}]+)\}/g, (p1: string, p2: string): string => `:${p2}`);
 
     this.method = method.toUpperCase();
     this.operation = operation;
     this.securitySchemes = securitySchemes || null;
 
-    this.pathRegexp = pathToRegexp(pathPattern);
+    this.pathRegexp = pathToRegexp(this.pathPattern);
   }
 
   getResponseSchema(): JSONSchema | null {
@@ -210,6 +212,17 @@ class Operation {
         const isQueryValid = ajv.validate(schemas.query, req.query);
 
         if (!isQueryValid) {
+          return false;
+        }
+      }
+
+      const matchPath = match(this.pathPattern);
+      const matchObject = matchPath(req.path);
+
+      if ((matchObject && matchObject.params) || schemas.path) {
+        const isPathValid = ajv.validate(schemas.path, (matchObject && matchObject.params) || {});
+
+        if (!isPathValid) {
           return false;
         }
       }
