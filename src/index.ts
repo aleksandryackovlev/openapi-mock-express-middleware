@@ -5,6 +5,7 @@ import express from 'express';
 import createRouter from './router';
 import Operations from './operations';
 import authMiddleware from './middleware/auth';
+import validateHeaders from './middleware/validateHeaders';
 
 export interface Options {
   file: string;
@@ -24,7 +25,7 @@ const createMiddleware = ({ file, locale = 'en' }: Options): express.Router => {
     next();
   });
 
-  router.use(authMiddleware);
+  router.use(authMiddleware, validateHeaders);
 
   router.use((req, res, next) => {
     return res.locals.operation ? res.locals.operation.generateResponse(req, res) : next();

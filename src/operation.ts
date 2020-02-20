@@ -24,6 +24,12 @@ jsf.define('examples', (value) => {
   return '';
 });
 
+export interface ParamsSchemas {
+  header: JSONSchema;
+  query: JSONSchema;
+  path: JSONSchema;
+}
+
 const ajv = new Ajv({ coerceTypes: true, unknownFormats: ['int32', 'int64', 'binary'] });
 
 function isReferenceObject(response: unknown): response is OpenAPIV3.ReferenceObject {
@@ -96,6 +102,45 @@ class Operation {
     return requirements;
   }
 
+  getParamsSchemas(): ParamsSchemas {
+    const schemas: ParamsSchemas = {
+      header: {
+        type: 'object',
+        required: [],
+      },
+      query: {
+        type: 'object',
+        additionalProperties: false,
+        required: [],
+      },
+      path: {
+        type: 'object',
+        additionalProperties: false,
+        required: [],
+      },
+    };
+
+    const parameters = get(this.operation, ['parameters']);
+
+    if (parameters) {
+      parameters.forEach((parameter) => {
+        if (
+          parameter &&
+          !isReferenceObject(parameter) &&
+          (parameter.in === 'header' || parameter.in === 'query' || parameter.in === 'path') &&
+          schemas[parameter.in]
+        ) {
+          const prevRequired: string[] = schemas[parameter.in].required || [];
+
+          set(schemas, [parameter.in, 'properties', parameter.name], parameter.schema);
+          set(schemas, [parameter.in, 'required'], [...prevRequired, parameter.name]);
+        }
+      });
+    }
+
+    return schemas;
+  }
+
   isParamsValid(req: express.Request): boolean {
     const schemas: {
       header: JSONSchema;
@@ -134,14 +179,6 @@ class Operation {
           set(schemas, [parameter.in, 'required'], [...prevRequired, parameter.name]);
         }
       });
-
-      if (schemas.header.properties && Object.keys(schemas.header.properties)) {
-        const isHeadersValid = ajv.validate(schemas.header, req.headers);
-
-        if (!isHeadersValid) {
-          return false;
-        }
-      }
 
       if (
         (schemas.query.properties && Object.keys(schemas.query.properties)) ||
