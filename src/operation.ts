@@ -96,68 +96,6 @@ class Operation {
     return requirements;
   }
 
-  isRequestAuthorized(req: express.Request): boolean {
-    const securityRequirements = this.getSecurityRequirements();
-    if (
-      securityRequirements.some((schemes) => {
-        if (schemes && this.securitySchemes) {
-          return Object.keys(schemes).some((scheme) => {
-            if (this.securitySchemes && this.securitySchemes[scheme]) {
-              const securityScheme = this.securitySchemes[scheme];
-              switch (securityScheme.type) {
-                case 'apiKey':
-                  if (securityScheme.in === 'header') {
-                    return req.header(securityScheme.name) === undefined;
-                  }
-
-                  if (securityScheme.in === 'query') {
-                    return req.query[securityScheme.name] === undefined;
-                  }
-
-                  if (securityScheme.in === 'cookie') {
-                    return req.cookies[securityScheme.name] === undefined;
-                  }
-
-                  return false;
-
-                case 'http': {
-                  const authHeader = req.header('Authorization');
-                  if (!authHeader) {
-                    return true;
-                  }
-
-                  return securityScheme.scheme === 'basic'
-                    ? !authHeader.startsWith('Basic')
-                    : !authHeader.startsWith('Bearer');
-                }
-
-                case 'oauth2': {
-                  const authHeader = req.header('Authorization');
-                  if (!authHeader) {
-                    return true;
-                  }
-
-                  return !authHeader.startsWith('Bearer');
-                }
-
-                default:
-                  return false;
-              }
-            }
-
-            return false;
-          });
-        }
-
-        return false;
-      })
-    ) {
-      return false;
-    }
-
-    return true;
-  }
-
   isParamsValid(req: express.Request): boolean {
     const schemas: {
       header: JSONSchema;
@@ -252,10 +190,6 @@ class Operation {
 
   generateResponse(req: express.Request, res: express.Response): express.Response {
     const responseSchema = this.getResponseSchema();
-
-    if (!this.isRequestAuthorized(req)) {
-      return res.status(401).json({ message: 'Unauthorized request' });
-    }
 
     if (!this.isRequestValid(req)) {
       return res.status(400).json({ message: 'Bad request' });

@@ -4,6 +4,7 @@ import express from 'express';
 
 import createRouter from './router';
 import Operations from './operations';
+import authMiddleware from './middleware/auth';
 
 export interface Options {
   file: string;
@@ -19,9 +20,14 @@ const createMiddleware = ({ file, locale = 'en' }: Options): express.Router => {
   const operations = new Operations({ file, locale });
 
   router.use('/{0,}', async (req, res, next) => {
-    const operation = await operations.match(req);
+    res.locals.operation = await operations.match(req);
+    next();
+  });
 
-    return operation ? operation.generateResponse(req, res) : next();
+  router.use(authMiddleware);
+
+  router.use((req, res, next) => {
+    return res.locals.operation ? res.locals.operation.generateResponse(req, res) : next();
   });
 
   router.use((req, res) => {
