@@ -5,7 +5,7 @@ import Ajv from 'ajv';
 import { has, get, set } from 'lodash';
 
 import faker from 'faker';
-import { pathToRegexp, match } from 'path-to-regexp';
+import { pathToRegexp } from 'path-to-regexp';
 
 jsf.extend('faker', () => {
   // faker.locale = locale;
@@ -187,17 +187,6 @@ export class Operation {
         const isQueryValid = ajv.validate(schemas.query, req.query);
 
         if (!isQueryValid) {
-          return false;
-        }
-      }
-
-      const matchPath = match(this.pathPattern);
-      const matchObject = matchPath(req.path);
-
-      if ((matchObject && matchObject.params) || schemas.path) {
-        const isPathValid = ajv.validate(schemas.path, (matchObject && matchObject.params) || {});
-
-        if (!isPathValid) {
           return false;
         }
       }
