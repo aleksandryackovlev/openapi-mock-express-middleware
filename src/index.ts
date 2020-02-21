@@ -4,7 +4,7 @@ import express from 'express';
 
 import createRouter from './router';
 import { createOperations } from './operations';
-import { isAuthenticated, validateHeaders, validatePath } from './middleware';
+import { isAuthenticated, validateHeaders, validatePath, validateQuery } from './middleware';
 
 export interface Options {
   file: string;
@@ -24,7 +24,7 @@ const createMiddleware = ({ file, locale = 'en' }: Options): express.Router => {
     next();
   });
 
-  router.use(isAuthenticated, validateHeaders, validatePath);
+  router.use(isAuthenticated, validateHeaders, validatePath, validateQuery);
 
   router.use((req, res, next) => {
     return res.locals.operation ? res.locals.operation.generateResponse(req, res) : next();
