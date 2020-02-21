@@ -6,12 +6,12 @@ import createRouter from './router';
 import { createOperations } from './operations';
 import { isAuthenticated, validateHeaders, validatePath, validateQuery } from './middleware';
 
-export interface Options {
+export interface MiddlewareOptions {
   file: string;
   locale?: string;
 }
 
-const createMiddleware = ({ file, locale = 'en' }: Options): express.Router => {
+const createMiddleware = ({ file, locale = 'en' }: MiddlewareOptions): express.Router => {
   if (!fs.existsSync(file)) {
     throw new Error('File with the openapi docs does not exist');
   }
