@@ -1,7 +1,7 @@
 import express from 'express';
 import Ajv from 'ajv';
 
-import Operation, { ParamsSchemas } from '../operation';
+import { Operation, ParamsSchemas } from '../operations';
 
 const ajv = new Ajv({ coerceTypes: true, unknownFormats: ['int32', 'int64', 'binary'] });
 

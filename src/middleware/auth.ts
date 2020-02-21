@@ -2,7 +2,7 @@ import express from 'express';
 
 import { OpenAPIV3 } from 'openapi-types';
 
-import Operation from '../operation';
+import { Operation } from '../operations';
 
 const isAuthorized = (
   req: express.Request,

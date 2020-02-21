@@ -3,7 +3,7 @@ import fs from 'fs';
 import express from 'express';
 
 import createRouter from './router';
-import Operations from './operations';
+import { createOperations } from './operations';
 import authMiddleware from './middleware/auth';
 import validateHeaders from './middleware/validateHeaders';
 
@@ -18,7 +18,7 @@ const createMiddleware = ({ file, locale = 'en' }: Options): express.Router => {
   }
 
   const router = createRouter();
-  const operations = new Operations({ file, locale });
+  const operations = createOperations({ file, locale });
 
   router.use('/{0,}', async (req, res, next) => {
     res.locals.operation = await operations.match(req);

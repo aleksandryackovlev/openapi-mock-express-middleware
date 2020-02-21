@@ -7,9 +7,9 @@ import { Request } from 'express';
 import SwaggerParser from 'swagger-parser';
 import { get, toPairs } from 'lodash';
 
-import Operation from './operation';
+import { Operation, createOperation } from './operation';
 
-class Operations {
+export class Operations {
   operations: Operation[] | null = null;
 
   file: string;
@@ -50,8 +50,8 @@ class Operations {
     pathOperations: OpenAPIV3.PathItemObject,
     securitySchemes?: { [key: string]: OpenAPIV3.SecuritySchemeObject }
   ): Operation[] {
-    return toPairs(pathOperations).map(
-      ([method, operation]) => new Operation({ method, path: pathName, operation, securitySchemes })
+    return toPairs(pathOperations).map(([method, operation]) =>
+      createOperation({ method, path: pathName, operation, securitySchemes })
     );
   }
   /* eslint-enable class-methods-use-this */
@@ -74,4 +74,5 @@ class Operations {
   }
 }
 
-export default Operations;
+export const createOperations = ({ file, locale }: { file: string; locale: string }): Operations =>
+  new Operations({ file, locale });

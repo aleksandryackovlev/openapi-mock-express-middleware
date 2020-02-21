@@ -36,7 +36,7 @@ function isReferenceObject(response: unknown): response is OpenAPIV3.ReferenceOb
   return typeof response === 'object' && response !== null && '$ref' in response;
 }
 
-class Operation {
+export class Operation {
   method: string;
 
   pathRegexp: RegExp;
@@ -236,4 +236,20 @@ class Operation {
   }
 }
 
-export default Operation;
+export const createOperation = ({
+  method,
+  path,
+  operation,
+  securitySchemes,
+}: {
+  path: string;
+  method: string;
+  operation: OpenAPIV3.OperationObject;
+  securitySchemes?: { [key: string]: OpenAPIV3.SecuritySchemeObject };
+}): Operation =>
+  new Operation({
+    method,
+    path,
+    operation,
+    securitySchemes,
+  });
