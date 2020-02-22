@@ -4,7 +4,13 @@ import express from 'express';
 
 import createRouter from './router';
 import { createOperations } from './operations';
-import { isAuthenticated, validateHeaders, validatePath, validateQuery } from './middleware';
+import {
+  isAuthenticated,
+  validateHeaders,
+  validatePath,
+  validateQuery,
+  validateBody,
+} from './middleware';
 
 export interface MiddlewareOptions {
   file: string;
@@ -24,7 +30,7 @@ const createMiddleware = ({ file, locale = 'en' }: MiddlewareOptions): express.R
     next();
   });
 
-  router.use(isAuthenticated, validateHeaders, validatePath, validateQuery);
+  router.use(isAuthenticated, validateHeaders, validatePath, validateQuery, validateBody);
 
   router.use((req, res, next) => {
     return res.locals.operation ? res.locals.operation.generateResponse(req, res) : next();

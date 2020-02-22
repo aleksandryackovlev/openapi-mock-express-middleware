@@ -88,9 +88,14 @@ describe('middleware', () => {
     expect(response.status).toBe(401);
   });
 
-  it.skip('should return an 400 error response on invalid content-type request', async () => {
-    const response = await request.get('/api/pet/2');
+  it('should return an 400 error response on invalid content-type request', async () => {
+    const response = await request
+      .post('/api/pet')
+      .set('Authorization', 'Bearer key')
+      .type('form')
+      .send({ name: 'doggie' })
+      .send({ photoUrls: ['http://some-url.com'] });
 
-    expect(response.status).toBe(200);
+    expect(response.status).toBe(400);
   });
 });

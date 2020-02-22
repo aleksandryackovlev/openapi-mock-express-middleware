@@ -1,7 +1,6 @@
 import jsf, { JSONSchema } from 'json-schema-faker';
 import { OpenAPIV3 } from 'openapi-types';
 import express from 'express';
-import Ajv from 'ajv';
 import { has, get, set } from 'lodash';
 
 import faker from 'faker';
@@ -29,8 +28,6 @@ export interface ParamsSchemas {
   query: JSONSchema;
   path: JSONSchema;
 }
-
-const ajv = new Ajv({ coerceTypes: true, unknownFormats: ['int32', 'int64', 'binary'] });
 
 function isReferenceObject(response: unknown): response is OpenAPIV3.ReferenceObject {
   return typeof response === 'object' && response !== null && '$ref' in response;
@@ -141,29 +138,12 @@ export class Operation {
     return schemas;
   }
 
-  isBodyValid(req: express.Request): boolean {
-    if (has(this.operation, ['requestBody', 'content', 'application/json', 'schema'])) {
-      const isBodyValid = ajv.validate(
-        get(this.operation, ['requestBody', 'content', 'application/json', 'schema']),
-        req.body
-      );
-
-      return !!isBodyValid;
-    }
-
-    return true;
-  }
-
-  isRequestValid(req: express.Request): boolean {
-    return this.isBodyValid(req);
+  getBodySchema(contentType: string): JSONSchema | null {
+    return get(this.operation, ['requestBody', 'content', contentType, 'schema']);
   }
 
   generateResponse(req: express.Request, res: express.Response): express.Response {
     const responseSchema = this.getResponseSchema();
-
-    if (!this.isRequestValid(req)) {
-      return res.status(400).json({ message: 'Bad request' });
-    }
 
     return res.json(responseSchema ? jsf.generate(responseSchema) : {});
   }
