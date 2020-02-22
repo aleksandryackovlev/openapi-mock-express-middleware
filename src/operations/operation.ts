@@ -1,7 +1,7 @@
 import jsf, { JSONSchema } from 'json-schema-faker';
 import { OpenAPIV3 } from 'openapi-types';
 import express from 'express';
-import { has, get, set } from 'lodash';
+import { has, get, set, findKey } from 'lodash';
 
 import faker from 'faker';
 import { pathToRegexp } from 'path-to-regexp';
@@ -64,11 +64,33 @@ export class Operation {
     this.pathRegexp = pathToRegexp(this.pathPattern);
   }
 
-  getResponseSchema(): JSONSchema | null {
-    if (has(this.operation, ['responses', '200', 'content', 'application/json', 'schema'])) {
+  getResponseStatus(): number {
+    const responses = get(this.operation, 'responses');
+
+    if (!responses) {
+      return 200;
+    }
+
+    const status: string | undefined = findKey(responses, (content, code) => {
+      const statusCode = parseInt(code, 10);
+
+      if (Number.isNaN(statusCode)) {
+        return false;
+      }
+
+      return statusCode >= 200 && statusCode < 299;
+    });
+
+    return status ? parseInt(status, 10) : 200;
+  }
+
+  getResponseSchema(responseStatus = 200): JSONSchema | null {
+    if (
+      has(this.operation, ['responses', responseStatus, 'content', 'application/json', 'schema'])
+    ) {
       const { schema, example, examples } = get(this.operation, [
         'responses',
-        '200',
+        responseStatus,
         'content',
         'application/json',
       ]);
@@ -143,9 +165,10 @@ export class Operation {
   }
 
   generateResponse(req: express.Request, res: express.Response): express.Response {
-    const responseSchema = this.getResponseSchema();
+    const responseStatus = this.getResponseStatus();
+    const responseSchema = this.getResponseSchema(responseStatus);
 
-    return res.json(responseSchema ? jsf.generate(responseSchema) : {});
+    return res.status(responseStatus).json(responseSchema ? jsf.generate(responseSchema) : {});
   }
 }
 
