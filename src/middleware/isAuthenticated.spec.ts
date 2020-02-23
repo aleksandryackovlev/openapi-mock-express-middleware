@@ -180,6 +180,30 @@ describe('isAuthenticated', () => {
         } as express.Request)
       ).toBe(true);
     });
+
+    it('should authorize the apiKey security type of unknown type', () => {
+      const securityScheme = {
+        type: 'apiKey',
+        in: 'unknown',
+        name: 'authKey',
+      } as OpenAPIV3.SecuritySchemeObject;
+
+      expect(
+        checkAuthByType(securityScheme, {
+          cookies: {
+            authKey: 'test',
+          },
+        } as express.Request)
+      ).toBe(false);
+
+      expect(
+        checkAuthByType(securityScheme, {
+          cookies: {
+            someOtherKey: 'test',
+          },
+        } as express.Request)
+      ).toBe(false);
+    });
   });
 });
 /* eslint-enable @typescript-eslint/no-unused-vars */
