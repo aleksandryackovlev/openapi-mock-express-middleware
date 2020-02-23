@@ -11,19 +11,25 @@ import {
   validateQuery,
   validateBody,
 } from './middleware';
+import { JSFOptions } from './utils';
 
 export interface MiddlewareOptions {
   file: string;
   locale?: string;
+  options?: Partial<JSFOptions>;
 }
 
-const createMiddleware = ({ file, locale = 'en' }: MiddlewareOptions): express.Router => {
+const createMiddleware = ({
+  file,
+  locale = 'en',
+  options = {},
+}: MiddlewareOptions): express.Router => {
   if (!fs.existsSync(file)) {
     throw new Error('File with the openapi docs does not exist');
   }
 
   const router = createRouter();
-  const operations = createOperations({ file, locale });
+  const operations = createOperations({ file, locale, options });
 
   router.use('/{0,}', async (req, res, next) => {
     res.locals.operation = await operations.match(req);

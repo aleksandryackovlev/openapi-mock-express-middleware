@@ -1,27 +1,10 @@
-import jsf, { JSONSchema } from 'json-schema-faker';
 import { OpenAPIV3 } from 'openapi-types';
 import express from 'express';
 import { has, get, set, findKey } from 'lodash';
 
-import faker from 'faker';
 import { pathToRegexp } from 'path-to-regexp';
 
-jsf.extend('faker', () => {
-  // faker.locale = locale;
-  return faker;
-});
-
-jsf.define('example', (value) => {
-  return value;
-});
-
-jsf.define('examples', (value) => {
-  if (typeof value === 'object' && value !== null && Object.keys(value).length) {
-    return value[Object.keys(value)[0]].value;
-  }
-
-  return '';
-});
+import { JSF, JSONSchema } from '../utils';
 
 export interface ParamsSchemas {
   header: JSONSchema;
@@ -42,6 +25,8 @@ export class Operation {
 
   pathPattern: string;
 
+  generator: JSF;
+
   securitySchemes: { [key: string]: OpenAPIV3.SecuritySchemeObject } | null;
 
   constructor({
@@ -49,10 +34,12 @@ export class Operation {
     path,
     operation,
     securitySchemes,
+    generator,
   }: {
     path: string;
     method: string;
     operation: OpenAPIV3.OperationObject;
+    generator: JSF;
     securitySchemes?: { [key: string]: OpenAPIV3.SecuritySchemeObject };
   }) {
     this.pathPattern = path.replace(/\{([^/}]+)\}/g, (p1: string, p2: string): string => `:${p2}`);
@@ -60,6 +47,7 @@ export class Operation {
     this.method = method.toUpperCase();
     this.operation = operation;
     this.securitySchemes = securitySchemes || null;
+    this.generator = generator;
 
     this.pathRegexp = pathToRegexp(this.pathPattern);
   }
@@ -171,7 +159,9 @@ export class Operation {
     const responseStatus = this.getResponseStatus();
     const responseSchema = this.getResponseSchema(responseStatus);
 
-    return res.status(responseStatus).json(responseSchema ? jsf.generate(responseSchema) : {});
+    return res
+      .status(responseStatus)
+      .json(responseSchema ? this.generator.generate(responseSchema) : {});
   }
 }
 
@@ -179,16 +169,19 @@ export const createOperation = ({
   method,
   path,
   operation,
+  generator,
   securitySchemes,
 }: {
   path: string;
   method: string;
   operation: OpenAPIV3.OperationObject;
+  generator: JSF;
   securitySchemes?: { [key: string]: OpenAPIV3.SecuritySchemeObject };
 }): Operation =>
   new Operation({
     method,
     path,
     operation,
+    generator,
     securitySchemes,
   });

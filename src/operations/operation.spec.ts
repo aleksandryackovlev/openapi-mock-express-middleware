@@ -1,4 +1,7 @@
 import { Operation } from './operation';
+import { createGenerator } from '../utils';
+
+const generator = createGenerator();
 
 describe('Operation', () => {
   describe('getResponseStatus', () => {
@@ -6,6 +9,7 @@ describe('Operation', () => {
       const operation = new Operation({
         method: 'get',
         path: '/pet/:petId',
+        generator,
         operation: {
           responses: {
             '205': {
@@ -56,6 +60,7 @@ describe('Operation', () => {
     it('should return 200 if successful responses are not described', () => {
       const operation = new Operation({
         method: 'get',
+        generator,
         path: '/pet/:petId',
         operation: {},
       });
@@ -66,6 +71,7 @@ describe('Operation', () => {
     it('should return 200 if responses are strings', () => {
       const operation = new Operation({
         method: 'get',
+        generator,
         path: '/pet/:petId',
         operation: {
           responses: {
@@ -101,6 +107,7 @@ describe('Operation', () => {
       const operation = new Operation({
         method: 'get',
         path: '/pet/:petId',
+        generator,
         operation: {
           responses: {
             '205': {
@@ -163,6 +170,7 @@ describe('Operation', () => {
       const operation = new Operation({
         method: 'get',
         path: '/pet/:petId',
+        generator,
         operation: {
           responses: {
             '200': {
@@ -214,6 +222,7 @@ describe('Operation', () => {
       const operation = new Operation({
         method: 'get',
         path: '/pet/:petId',
+        generator,
         operation: {
           responses: {
             '205': {
@@ -285,6 +294,7 @@ describe('Operation', () => {
       const operation = new Operation({
         method: 'get',
         path: '/pet/:petId',
+        generator,
         operation: {
           responses: {
             '200': {
@@ -308,6 +318,7 @@ describe('Operation', () => {
       const operation = new Operation({
         method: 'get',
         path: '/pet/:petId',
+        generator,
         operation: {
           responses: {
             '400': {
@@ -342,6 +353,7 @@ describe('Operation', () => {
       const operationWithParams = new Operation({
         method: 'post',
         path: '/pet/:petId',
+        generator,
         operation: {
           parameters: [
             {
@@ -377,6 +389,7 @@ describe('Operation', () => {
       const operationWithoutParams = new Operation({
         method: 'post',
         path: '/pet/:petId',
+        generator,
         operation: {},
       });
 
@@ -436,6 +449,7 @@ describe('Operation', () => {
       const operation = new Operation({
         method: 'post',
         path: '/pet/:petId',
+        generator,
         operation: {
           requestBody: {
             content: {

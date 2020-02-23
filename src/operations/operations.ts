@@ -7,6 +7,8 @@ import { Request } from 'express';
 import SwaggerParser from 'swagger-parser';
 import { get, toPairs } from 'lodash';
 
+import { createGenerator, JSFOptions, JSF } from '../utils';
+
 import { Operation, createOperation } from './operation';
 
 export class Operations {
@@ -16,10 +18,21 @@ export class Operations {
 
   locale: string;
 
-  constructor({ file, locale }: { file: string; locale: string }) {
+  generator: JSF;
+
+  constructor({
+    file,
+    locale,
+    options,
+  }: {
+    file: string;
+    locale: string;
+    options: Partial<JSFOptions>;
+  }) {
     this.file = file;
     this.locale = locale;
     this.watch();
+    this.generator = createGenerator(locale, options);
   }
 
   reset(): void {
@@ -51,7 +64,13 @@ export class Operations {
     securitySchemes?: { [key: string]: OpenAPIV3.SecuritySchemeObject }
   ): Operation[] {
     return toPairs(pathOperations).map(([method, operation]) =>
-      createOperation({ method, path: pathName, operation, securitySchemes })
+      createOperation({
+        method,
+        path: pathName,
+        operation,
+        securitySchemes,
+        generator: this.generator,
+      })
     );
   }
   /* eslint-enable class-methods-use-this */
@@ -74,5 +93,12 @@ export class Operations {
   }
 }
 
-export const createOperations = ({ file, locale }: { file: string; locale: string }): Operations =>
-  new Operations({ file, locale });
+export const createOperations = ({
+  file,
+  locale,
+  options,
+}: {
+  file: string;
+  locale: string;
+  options: Partial<JSFOptions>;
+}): Operations => new Operations({ file, locale, options });
