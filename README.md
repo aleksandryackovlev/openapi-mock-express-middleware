@@ -17,12 +17,26 @@
 
 Generates an express mock server from an [Open API 3.0](https://swagger.io/docs/specification/about/) documentation.
 
-## Getting Started
+## Installation
 
 To begin, you'll need to install `openapi-mock-express-middleware`:
 
 ```console
 $ npm install openapi-mock-express-middleware --save-dev
+```
+
+## Usage
+### Simple Usage
+```javascript
+const express = require('express');
+const mockServer = require('openapi-mock-express-middleware');
+
+const app = express();
+app.use(
+  '/api' /* root path for the mock server */,
+  mockServer({ file: '/absolute/path/to/your/openapi/spec.yml' })
+);
+app.listen(80, () => console.log('Server listening on port 80'))''
 ```
 
 ## Contributing
@@ -40,3 +54,4 @@ Please take a moment to read our contributing guidelines if you haven't yet done
 [npm-url]: https://npmjs.com/package/openapi-mock-express-middleware
 [deps]: https://david-dm.org/aleksandryackovlev/openapi-mock-express-middleware.svg
 [deps-url]: https://david-dm.org/aleksandryackovlev/openapi-mock-express-middleware
+
