@@ -7,6 +7,16 @@ const defaultOptions = {
   optionalsProbability: 0.5,
 };
 
+/* eslint-disable @typescript-eslint/no-explicit-any */
+export const handleExamples = (value: any): any => {
+  if (typeof value === 'object' && value !== null && Object.keys(value).length) {
+    return value[Object.keys(value)[0]].value;
+  }
+
+  return '';
+};
+/* eslint-enable @typescript-eslint/no-explicit-any */
+
 export const createGenerator: (locale?: string, options?: Partial<JSFOptions>) => JSF = (
   locale = 'en',
   options = defaultOptions
@@ -25,13 +35,7 @@ export const createGenerator: (locale?: string, options?: Partial<JSFOptions>) =
     return value;
   });
 
-  jsf.define('examples', (value) => {
-    if (typeof value === 'object' && value !== null && Object.keys(value).length) {
-      return value[Object.keys(value)[0]].value;
-    }
-
-    return '';
-  });
+  jsf.define('examples', handleExamples);
 
   return jsf;
 };
