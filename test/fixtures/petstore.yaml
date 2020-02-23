@@ -346,6 +346,7 @@ paths:
       parameters:
       - name: x-req-param
         in: header
+        required: true
         schema:
           type: string
       - name: petId
