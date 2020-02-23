@@ -1,6 +1,6 @@
 import { Operation } from './operation';
 
-describe('operation', () => {
+describe('Operation', () => {
   describe('getResponseStatus', () => {
     it('should return the first lowest successful status code', () => {
       const operation = new Operation({
@@ -98,23 +98,242 @@ describe('operation', () => {
 
   describe('getResponseSchema', () => {
     it('should return the application/json response schema for a given status code', () => {
-      expect(true).toBe(false);
+      const operation = new Operation({
+        method: 'get',
+        path: '/pet/:petId',
+        operation: {
+          responses: {
+            '205': {
+              description: 'successful operation',
+              content: {
+                'application/json': {
+                  schema: {
+                    type: 'object',
+                    required: ['name', 'photo'],
+                    properties: {
+                      name: {
+                        type: 'string',
+                      },
+                      photo: {
+                        type: 'string',
+                      },
+                    },
+                  },
+                },
+              },
+            },
+            '201': {
+              description: 'successful operation',
+              content: {
+                'application/json': {
+                  schema: {
+                    type: 'object',
+                    required: ['nameValue'],
+                    properties: {
+                      nameValue: {
+                        type: 'string',
+                      },
+                      photoValue: {
+                        type: 'string',
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+      });
+
+      expect(operation.getResponseSchema(205)).toStrictEqual({
+        type: 'object',
+        required: ['name', 'photo'],
+        properties: {
+          name: {
+            type: 'string',
+          },
+          photo: {
+            type: 'string',
+          },
+        },
+      });
     });
 
     it('should extend the resulting schema with the example prop if it exists on its parent', () => {
-      expect(true).toBe(false);
+      const operation = new Operation({
+        method: 'get',
+        path: '/pet/:petId',
+        operation: {
+          responses: {
+            '200': {
+              description: 'successful operation',
+              content: {
+                'application/json': {
+                  example: {
+                    name: 'first example name',
+                    photo: 'http://some-url-first.com',
+                  },
+                  schema: {
+                    type: 'object',
+                    required: ['name', 'photo'],
+                    properties: {
+                      name: {
+                        type: 'string',
+                      },
+                      photo: {
+                        type: 'string',
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+      });
+
+      expect(operation.getResponseSchema()).toStrictEqual({
+        type: 'object',
+        required: ['name', 'photo'],
+        properties: {
+          name: {
+            type: 'string',
+          },
+          photo: {
+            type: 'string',
+          },
+        },
+        example: {
+          name: 'first example name',
+          photo: 'http://some-url-first.com',
+        },
+      });
     });
 
     it('should extend the resulting schema with the examples prop if it exists on its parent', () => {
-      expect(true).toBe(false);
+      const operation = new Operation({
+        method: 'get',
+        path: '/pet/:petId',
+        operation: {
+          responses: {
+            '205': {
+              description: 'successful operation',
+              content: {
+                'application/json': {
+                  examples: {
+                    first: {
+                      value: {
+                        name: 'first example name',
+                        photo: 'http://some-url-first.com',
+                      },
+                    },
+                    second: {
+                      value: {
+                        name: 'second example name',
+                        photo: 'http://some-url-second.com',
+                      },
+                    },
+                  },
+                  schema: {
+                    type: 'object',
+                    required: ['name', 'photo'],
+                    properties: {
+                      name: {
+                        type: 'string',
+                      },
+                      photo: {
+                        type: 'string',
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+      });
+
+      expect(operation.getResponseSchema(205)).toStrictEqual({
+        type: 'object',
+        required: ['name', 'photo'],
+        properties: {
+          name: {
+            type: 'string',
+          },
+          photo: {
+            type: 'string',
+          },
+        },
+        examples: {
+          first: {
+            value: {
+              name: 'first example name',
+              photo: 'http://some-url-first.com',
+            },
+          },
+          second: {
+            value: {
+              name: 'second example name',
+              photo: 'http://some-url-second.com',
+            },
+          },
+        },
+      });
     });
 
     it('should return null if the resulting schema is a reference', () => {
-      expect(true).toBe(false);
+      const operation = new Operation({
+        method: 'get',
+        path: '/pet/:petId',
+        operation: {
+          responses: {
+            '200': {
+              description: 'successful operation',
+              content: {
+                'application/json': {
+                  schema: {
+                    $ref: '#/components/schemas/Pet',
+                  },
+                },
+              },
+            },
+          },
+        },
+      });
+
+      expect(operation.getResponseSchema()).toBe(null);
     });
 
     it('should return null if schema does not exist', () => {
-      expect(true).toBe(false);
+      const operation = new Operation({
+        method: 'get',
+        path: '/pet/:petId',
+        operation: {
+          responses: {
+            '400': {
+              description: 'successful operation',
+              content: {
+                'application/json': {
+                  schema: {
+                    type: 'object',
+                    required: ['name', 'photo'],
+                    properties: {
+                      name: {
+                        type: 'string',
+                      },
+                      photo: {
+                        type: 'string',
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+      });
+
+      expect(operation.getResponseSchema()).toBe(null);
     });
   });
 
