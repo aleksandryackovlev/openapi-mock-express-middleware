@@ -1,11 +1,8 @@
 import express from 'express';
-import Ajv from 'ajv';
-
 import { has } from 'lodash';
 
 import { Operation } from '../operations';
-
-const ajv = new Ajv({ coerceTypes: true, unknownFormats: ['int32', 'int64', 'binary'] });
+import { validator } from '../utils';
 
 const validateBody = (
   req: express.Request,
@@ -29,12 +26,12 @@ const validateBody = (
   }
 
   if (bodySchema) {
-    const isBodyValid = ajv.validate(bodySchema, req.body);
+    const isBodyValid = validator.validate(bodySchema, req.body);
 
     if (!isBodyValid) {
       return res.status(400).json({
         message: 'Bad request. Invalid request body.',
-        errors: ajv.errors,
+        errors: validator.errors,
       });
     }
   }

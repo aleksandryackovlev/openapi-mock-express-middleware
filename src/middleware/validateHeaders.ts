@@ -1,9 +1,7 @@
 import express from 'express';
-import Ajv from 'ajv';
 
 import { Operation, ParamsSchemas } from '../operations';
-
-const ajv = new Ajv({ coerceTypes: true, unknownFormats: ['int32', 'int64', 'binary'] });
+import { validator } from '../utils';
 
 const validateHeaders = (
   req: express.Request,
@@ -17,12 +15,12 @@ const validateHeaders = (
   const schemas: ParamsSchemas = res.locals.operation.getParamsSchemas();
 
   if (schemas.header.properties && Object.keys(schemas.header.properties)) {
-    const isHeadersValid = ajv.validate(schemas.header, req.headers);
+    const isHeadersValid = validator.validate(schemas.header, req.headers);
 
     if (!isHeadersValid) {
       return res.status(400).json({
         message: 'Bad request. Invalid headers.',
-        errors: ajv.errors,
+        errors: validator.errors,
       });
     }
   }
