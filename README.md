@@ -61,7 +61,7 @@ app.use(
 app.listen(80, () => console.log('Server listening on port 80'))''
 ```
 
-### Responses' customization
+### Mock data
 #### Basic behavior
 By default midleware generates random responses depending on the types specified in the openapi docs.
 
@@ -129,6 +129,89 @@ paths:
 {
   id: '8c4a4ed2-efba-4913-9604-19a27f36f322',
   name: 'Mr. Braxton Dickens'.
+}
+```
+
+#### Responses generated from examples
+If an example for the response object is specified, it will be used as a resulting sever response.
+
+**doc.yml**
+```
+...
+paths:
+  /user
+    get:
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  id: 'id-125'
+                  name: 'John Smith'
+                required:
+                  - id
+                  - name
+                properties:
+                  id:
+                    type: string
+                    x-faker: random.uuid
+                  name:
+                    type: string
+                    x-faker: name.findName
+...
+```
+
+**GET /user response**
+```javascript
+{
+  id: 'id-125',
+  name: 'John Smith'.
+}
+```
+
+If multiple examples for the response object are specified, the first one will be used as a resulting sever response.
+
+**doc.yml**
+```
+...
+paths:
+  /user
+    get:
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                examples:
+                  first:
+                    value:
+                      id: 'id-125'
+                      name: 'John Smith'
+                  second:
+                    value:
+                      id: 'some-other-id'
+                      name: 'Joe Doe'
+                required:
+                  - id
+                  - name
+                properties:
+                  id:
+                    type: string
+                    x-faker: random.uuid
+                  name:
+                    type: string
+                    x-faker: name.findName
+...
+```
+
+**GET /user response**
+```javascript
+{
+  id: 'id-125',
+  name: 'John Smith'.
 }
 ```
 
