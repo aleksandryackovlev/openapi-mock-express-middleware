@@ -71,28 +71,28 @@ By default midleware generates random responses depending on the types specified
 paths:
   /company
     get:
-        responses:
-            '200':
-                content:
-                    application/json:
-                        schema:
-                            type: object
-                            required:
-                                - id
-                                - number
-                            properties:
-                                id:
-                                    type: string
-                                number:
-                                    type: integer
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - id
+                  - number
+                properties:
+                  id:
+                    type: string
+                  number:
+                type: integer
 ...
 ```
 
 **GET /company response**
 ```javascript
 {
-    id: 'dolor veniam consequat laborum',
-    number: 68385409.
+  id: 'dolor veniam consequat laborum',
+  number: 68385409.
 }
 ```
 
@@ -105,30 +105,30 @@ In addition faker functions can be specified for data generation. The list of al
 paths:
   /user
     get:
-        responses:
-            '200':
-                content:
-                    application/json:
-                        schema:
-                            type: object
-                            required:
-                                - id
-                                - name
-                            properties:
-                                id:
-                                    type: string
-                                    x-faker: random.uuid
-                                name:
-                                    type: integer
-                                    x-faker: name.findName
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - id
+                  - name
+                properties:
+                  id:
+                    type: string
+                    x-faker: random.uuid
+                  name:
+                    type: string
+                    x-faker: name.findName
 ...
 ```
 
 **GET /user response**
 ```javascript
 {
-    id: '8c4a4ed2-efba-4913-9604-19a27f36f322',
-    name: 'Mr. Braxton Dickens'.
+  id: '8c4a4ed2-efba-4913-9604-19a27f36f322',
+  name: 'Mr. Braxton Dickens'.
 }
 ```
 
