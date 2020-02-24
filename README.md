@@ -26,7 +26,7 @@ $ npm install openapi-mock-express-middleware --save-dev
 ```
 
 ## Usage
-### Simple Usage
+### Simple Config
 ```javascript
 const express = require('express');
 const mockServer = require('openapi-mock-express-middleware');
@@ -35,6 +35,28 @@ const app = express();
 app.use(
   '/api' /* root path for the mock server */,
   mockServer({ file: '/absolute/path/to/your/openapi/spec.yml' })
+);
+app.listen(80, () => console.log('Server listening on port 80'))''
+```
+
+### Advanced Config
+The middleware uses [json-schmea-faker](https://github.com/json-schema-faker/json-schema-faker) under the hood. To configure it, you can pass locale and the options object to the factory function. (The full list of available options can be seen [here](https://github.com/json-schema-faker/json-schema-faker/tree/master/docs#available-options))
+```javascript
+const express = require('express');
+const mockServer = require('openapi-mock-express-middleware');
+
+const app = express();
+app.use(
+  '/api', // root path for the mock server
+  mockServer({
+    file: '/absolute/path/to/your/openapi/spec.yml'
+    locale: 'ru', // json-schema-faker locale, default to 'en'
+    {
+      alwaysFakeOptionals: true,
+      useDefaultValue: true,
+      // ...
+    }, // json-schema-faker options
+  })
 );
 app.listen(80, () => console.log('Server listening on port 80'))''
 ```
@@ -54,4 +76,4 @@ Please take a moment to read our contributing guidelines if you haven't yet done
 [npm-url]: https://npmjs.com/package/openapi-mock-express-middleware
 [deps]: https://david-dm.org/aleksandryackovlev/openapi-mock-express-middleware.svg
 [deps-url]: https://david-dm.org/aleksandryackovlev/openapi-mock-express-middleware
-
+j
