@@ -61,8 +61,8 @@ app.use(
 app.listen(80, () => console.log('Server listening on port 80'))''
 ```
 
-### Mock data
-#### Basic behavior
+## Mock data
+### Basic behavior
 By default midleware generates random responses depending on the types specified in the openapi docs.
 
 **doc.yml**
@@ -96,7 +96,7 @@ paths:
 }
 ```
 
-#### Faker generated responses
+### Faker generated responses
 In addition faker functions can be specified for data generation. The list of all available function can be found in the [faker documentation](https://github.com/marak/Faker.js/#api-methods).
 
 **doc.yml**
@@ -132,7 +132,7 @@ paths:
 }
 ```
 
-#### Responses generated from examples
+### Responses generated from examples
 If an example for the response object is specified, it will be used as a resulting sever response.
 
 **doc.yml**
