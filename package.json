@@ -1,7 +1,7 @@
 {
   "name": "openapi-mock-express-middleware",
   "version": "0.1.0",
-  "description": "Openapi mock middleware",
+  "description": "Generates an express mock server from an Open API spec",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
   "scripts": {
