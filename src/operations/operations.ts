@@ -4,7 +4,7 @@ import { OpenAPIV3 } from 'openapi-types';
 
 import chokidar from 'chokidar';
 import { Request } from 'express';
-import SwaggerParser from 'swagger-parser';
+import SwaggerParser from '@apidevtools/swagger-parser';
 import { get, toPairs } from 'lodash';
 
 import { createGenerator, JSFOptions, JSF } from '../utils';
