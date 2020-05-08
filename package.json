@@ -76,7 +76,7 @@
     "@types/supertest": "^2.0.8",
     "@typescript-eslint/eslint-plugin": "^2.16.0",
     "@typescript-eslint/parser": "^2.16.0",
-    "commitizen": "^4.0.3",
+    "commitizen": "^4.1.2",
     "concurrently": "^5.0.2",
     "cz-conventional-changelog": "^3.0.2",
     "eslint": "^6.8.0",
@@ -91,7 +91,7 @@
     "prettier": "^2.0.1",
     "standard-version": "^8.0.0",
     "supertest": "^4.0.2",
-    "ts-jest": "^25.2.1",
+    "ts-jest": "^25.5.0",
     "ts-node": "^8.6.2",
     "typescript": "^3.7.4"
   },
