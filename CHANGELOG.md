@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.0.0](https://github.com/aleksandryackovlev/openapi-mock-express-middleware/compare/v0.2.5...v1.0.0) (2020-06-28)
+
+
+### Bug Fixes
+
+* **index:** remove default export and rename createMiddleware ([91d90d3](https://github.com/aleksandryackovlev/openapi-mock-express-middleware/commit/91d90d348a5337d8f1023a2b12b45ce15e56d2ec))
+
 ### [0.2.5](https://github.com/aleksandryackovlev/openapi-mock-express-middleware/compare/v0.2.4...v0.2.5) (2020-05-08)
 
 ### [0.2.4](https://github.com/aleksandryackovlev/openapi-mock-express-middleware/compare/v0.2.3...v0.2.4) (2020-05-03)
