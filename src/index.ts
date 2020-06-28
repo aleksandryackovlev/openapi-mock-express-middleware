@@ -19,7 +19,7 @@ export interface MiddlewareOptions {
   options?: Partial<JSFOptions>;
 }
 
-const createMiddleware = ({
+export const createMockMiddleware = ({
   file,
   locale = 'en',
   options = {},
@@ -52,5 +52,3 @@ const createMiddleware = ({
 
   return router;
 };
-
-export default createMiddleware;

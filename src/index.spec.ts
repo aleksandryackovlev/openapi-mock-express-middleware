@@ -2,11 +2,11 @@ import path from 'path';
 
 import { Router } from 'express';
 
-import createMiddleware from './index';
+import { createMockMiddleware } from './index';
 
-describe('createMiddleware', () => {
+describe('createMockMiddleware', () => {
   it('should return an instance of the express router', async () => {
-    const middleware = createMiddleware({
+    const middleware = createMockMiddleware({
       file: path.resolve(__dirname, '../test/fixtures/petstore.yaml'),
     });
 
@@ -15,7 +15,7 @@ describe('createMiddleware', () => {
 
   it('should throw an error if the given file does not exist', () => {
     try {
-      createMiddleware({
+      createMockMiddleware({
         file: path.resolve(__dirname, '../test/fixtures/petstore_not_exist.yaml'),
       });
       throw new Error('exit');
