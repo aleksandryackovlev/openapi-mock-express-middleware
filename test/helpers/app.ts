@@ -2,11 +2,11 @@ import path from 'path';
 
 import express from 'express';
 
-import createMiddleware from '../../src';
+import { createMockMiddleware } from '../../src';
 
 const app = express();
 
-const middleware = createMiddleware({
+const middleware = createMockMiddleware({
   file: path.resolve(__dirname, '../fixtures/petstore.yaml'),
 });
 
