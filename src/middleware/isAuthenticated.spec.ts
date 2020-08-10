@@ -140,21 +140,21 @@ describe('isAuthenticated', () => {
         name: 'authKey',
       } as OpenAPIV3.SecuritySchemeObject;
 
-      expect(
-        checkAuthByType(securityScheme, {
-          query: {
-            authKey: 'test',
-          },
-        } as express.Request)
-      ).toBe(false);
+      const query: unknown = {
+        query: {
+          authKey: 'test',
+        },
+      };
 
-      expect(
-        checkAuthByType(securityScheme, {
-          query: {
-            someOtherKey: 'test',
-          },
-        } as express.Request)
-      ).toBe(true);
+      expect(checkAuthByType(securityScheme, query as express.Request)).toBe(false);
+
+      const wrongQuery: unknown = {
+        query: {
+          someOtherKey: 'test',
+        },
+      };
+
+      expect(checkAuthByType(securityScheme, wrongQuery as express.Request)).toBe(true);
     });
 
     it('should check auth for the apiKey security type in cookies', () => {
