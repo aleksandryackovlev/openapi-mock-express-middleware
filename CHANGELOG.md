@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.1.0](https://github.com/aleksandryackovlev/openapi-mock-express-middleware/compare/v1.0.0...v1.1.0) (2020-08-10)
+
+
+### Features
+
+* **router:** add cors options to the router ([d452812](https://github.com/aleksandryackovlev/openapi-mock-express-middleware/commit/d4528126b626171519635058eb44c4321b57eb9d))
+
+
+### Bug Fixes
+
+* **types:** fix typecasting ([e1c51c9](https://github.com/aleksandryackovlev/openapi-mock-express-middleware/commit/e1c51c95f091500a431527faf5fb39922799e6e4))
+
 ## [1.0.0](https://github.com/aleksandryackovlev/openapi-mock-express-middleware/compare/v0.2.5...v1.0.0) (2020-06-28)
 
 
