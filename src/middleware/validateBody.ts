@@ -17,7 +17,9 @@ const validateBody = (
     return next();
   }
 
-  const bodySchema = res.locals.operation.getBodySchema(req.get('content-type'));
+  const bodySchema = res.locals.operation.getBodySchema(
+    req.get('content-type') || 'application/json'
+  );
 
   if (Object.keys(req.body).length && !bodySchema) {
     return res.status(400).json({
