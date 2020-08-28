@@ -12,13 +12,14 @@ import {
   validateQuery,
   validateBody,
 } from './middleware';
-import { JSFOptions } from './utils';
+import { JSFOptions, JSFCallback } from './utils';
 
 export interface MiddlewareOptions {
   file: string;
   locale?: string;
   options?: Partial<JSFOptions>;
   cors?: CorsOptions;
+  jsfCallback?: JSFCallback;
 }
 
 export const createMockMiddleware = ({
@@ -32,13 +33,14 @@ export const createMockMiddleware = ({
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'HEAD', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization', 'Origin', 'Accept'],
   },
+  jsfCallback,
 }: MiddlewareOptions): express.Router => {
   if (!fs.existsSync(file)) {
     throw new Error('File with the openapi docs does not exist');
   }
 
   const router = createRouter(cors);
-  const operations = createOperations({ file, locale, options });
+  const operations = createOperations({ file, locale, options, callback: jsfCallback });
 
   router.use('/{0,}', async (req, res, next) => {
     res.locals.operation = await operations.match(req);

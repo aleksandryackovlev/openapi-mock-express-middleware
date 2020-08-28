@@ -3,6 +3,8 @@ import faker from 'faker';
 
 export { JSONSchema, JSFOptions, JSF } from 'json-schema-faker';
 
+export type JSFCallback = (jsf: JSF, fakerObject: typeof faker) => void;
+
 const defaultOptions = {
   optionalsProbability: 0.5,
 };
@@ -18,10 +20,12 @@ export const handleExamples = (value: any): any => {
 };
 /* eslint-enable @typescript-eslint/no-explicit-any */
 
-export const createGenerator: (locale?: string, options?: Partial<JSFOptions>) => JSF = (
-  locale = 'en',
-  options = defaultOptions
-) => {
+/* eslint-disable @typescript-eslint/no-empty-function */
+export const createGenerator: (
+  locale?: string,
+  options?: Partial<JSFOptions>,
+  callback?: JSFCallback
+) => JSF = (locale = 'en', options = defaultOptions, callback = <JSFCallback>(() => {})) => {
   jsf.option({
     ...defaultOptions,
     ...options,
@@ -38,5 +42,8 @@ export const createGenerator: (locale?: string, options?: Partial<JSFOptions>) =
 
   jsf.define('examples', handleExamples);
 
+  callback(jsf, faker);
+
   return jsf;
 };
+/* eslint-enable @typescript-eslint/no-empty-function */

@@ -7,7 +7,7 @@ import { Request } from 'express';
 import SwaggerParser from '@apidevtools/swagger-parser';
 import { get, toPairs } from 'lodash';
 
-import { createGenerator, JSFOptions, JSF } from '../utils';
+import { createGenerator, JSFOptions, JSF, JSFCallback } from '../utils';
 
 import { Operation, createOperation } from './operation';
 
@@ -24,15 +24,17 @@ export class Operations {
     file,
     locale,
     options,
+    callback,
   }: {
     file: string;
     locale: string;
     options: Partial<JSFOptions>;
+    callback?: JSFCallback;
   }) {
     this.file = file;
     this.locale = locale;
     this.watch();
-    this.generator = createGenerator(locale, options);
+    this.generator = createGenerator(locale, options, callback);
   }
 
   reset(): void {
@@ -97,8 +99,10 @@ export const createOperations = ({
   file,
   locale,
   options,
+  callback,
 }: {
   file: string;
   locale: string;
   options: Partial<JSFOptions>;
-}): Operations => new Operations({ file, locale, options });
+  callback?: JSFCallback;
+}): Operations => new Operations({ file, locale, options, callback });
