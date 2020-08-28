@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.2.0](https://github.com/aleksandryackovlev/openapi-mock-express-middleware/compare/v1.1.0...v1.2.0) (2020-08-28)
+
+
+### Features
+
+* **generator:** add middleware option for configuring json-schema-faker ([1f74457](https://github.com/aleksandryackovlev/openapi-mock-express-middleware/commit/1f744570925aaf4b52bcb77a4c9fe2ca82a57923))
+
 ## [1.1.0](https://github.com/aleksandryackovlev/openapi-mock-express-middleware/compare/v1.0.0...v1.1.0) (2020-08-10)
 
 
