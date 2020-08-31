@@ -18,7 +18,7 @@ export interface MiddlewareOptions {
   file: string;
   locale?: string;
   options?: Partial<JSFOptions>;
-  cors?: CorsOptions;
+  cors?: CorsOptions & { enabled?: boolean };
   jsfCallback?: JSFCallback;
 }
 
@@ -27,6 +27,7 @@ export const createMockMiddleware = ({
   locale = 'en',
   options = {},
   cors = {
+    enabled: true,
     origin: '*',
     maxAge: 31536000,
     credentials: true,
