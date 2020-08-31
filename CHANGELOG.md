@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.3.0](https://github.com/aleksandryackovlev/openapi-mock-express-middleware/compare/v1.2.0...v1.3.0) (2020-08-31)
+
+
+### Features
+
+* **cors:** add preflight cors ([4fec346](https://github.com/aleksandryackovlev/openapi-mock-express-middleware/commit/4fec346660a48e372a7ca8f47ddf5adca4d98ad4))
+
+
+### Bug Fixes
+
+* **json-schema-faker:** change the order of extension functions in the generator ([a298234](https://github.com/aleksandryackovlev/openapi-mock-express-middleware/commit/a298234371ec0dec2728cb3ef51ded8bde3d7b03))
+
 ## [1.2.0](https://github.com/aleksandryackovlev/openapi-mock-express-middleware/compare/v1.1.0...v1.2.0) (2020-08-28)
 
 
