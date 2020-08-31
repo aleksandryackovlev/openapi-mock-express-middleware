@@ -36,13 +36,13 @@ export const createGenerator: (
     return faker;
   });
 
+  callback(jsf, faker);
+
   jsf.define('example', (value) => {
     return value;
   });
 
   jsf.define('examples', handleExamples);
-
-  callback(jsf, faker);
 
   return jsf;
 };
