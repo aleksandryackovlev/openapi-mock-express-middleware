@@ -60,17 +60,6 @@ app.use(
       useExamplesValue: true,
       // ...
     },
-    cors: { // cors options
-    	enabled: true, // boolean, default to true
-    	// default values are:
-    	origin: '*',
-    	enabled: true,
-    	origin: '*',
-    	maxAge: 31536000,
-    	credentials: true,
-    	methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'HEAD', 'OPTIONS'],
-    	allowedHeaders: ['Content-Type', 'Authorization', 'Origin', 'Accept'],
-    },
     jsfCallback: (jsf, faker) => {
     	// function where you can extend json-schema-faker
     	...
