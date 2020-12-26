@@ -51,9 +51,9 @@
     "index.js"
   ],
   "dependencies": {
-    "@apidevtools/swagger-parser": "^10.0.1",
-    "ajv": "^6.12.4",
-    "chokidar": "^3.4.2",
+    "@apidevtools/swagger-parser": "^10.0.2",
+    "ajv": "^6.12.6",
+    "chokidar": "^3.4.3",
     "cookie-parser": "^1.4.5",
     "cors": "^2.8.5",
     "express": "^4.17.1",
@@ -62,7 +62,7 @@
     "lodash": "^4.17.20",
     "method-override": "^3.0.0",
     "openapi-types": "^7.0.1",
-    "path-to-regexp": "^6.1.0"
+    "path-to-regexp": "^6.2.0"
   },
   "devDependencies": {
     "@types/cookie-parser": "^1.4.2",
