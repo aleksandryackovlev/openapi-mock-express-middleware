@@ -3,7 +3,7 @@ import faker from 'faker';
 
 export { JSONSchema, JSFOptions, JSF } from 'json-schema-faker';
 
-export type JSFCallback = (jsf: JSF, fakerObject: typeof faker) => void;
+export type JSFCallback = (jsfInstance: JSF, fakerObject: typeof faker) => void;
 
 const defaultOptions = {
   optionalsProbability: 0.5,

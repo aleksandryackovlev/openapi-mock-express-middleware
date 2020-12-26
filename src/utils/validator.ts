@@ -1,7 +1,7 @@
 import Ajv from 'ajv';
 
 const ajv = new Ajv({
-  strict: 'log',
+  strict: false,
   coerceTypes: true,
   formats: {
     int32: true,
