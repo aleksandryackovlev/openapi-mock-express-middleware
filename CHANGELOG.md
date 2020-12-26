@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.0.0](https://github.com/aleksandryackovlev/openapi-mock-express-middleware/compare/v1.3.0...v2.0.0) (2020-12-26)
+
+
+### ⚠ BREAKING CHANGES
+
+* **cors:** `cors` option is no longer available
+
+### Bug Fixes
+
+* **validator:** update ajv initialization options according to the new api ([04d64f8](https://github.com/aleksandryackovlev/openapi-mock-express-middleware/commit/04d64f88a2282adba63eb59ab3343259a3c8b7e8))
+
+
+* **cors:** remove cors handling ([2bc16d0](https://github.com/aleksandryackovlev/openapi-mock-express-middleware/commit/2bc16d0ac65e27df80f650a41567619279d3ab81))
+
 ## [1.3.0](https://github.com/aleksandryackovlev/openapi-mock-express-middleware/compare/v1.2.0...v1.3.0) (2020-08-31)
 
 
