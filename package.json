@@ -52,7 +52,7 @@
   ],
   "dependencies": {
     "@apidevtools/swagger-parser": "^10.0.2",
-    "ajv": "^6.12.6",
+    "ajv": "^7.0.2",
     "chokidar": "^3.4.3",
     "cookie-parser": "^1.4.5",
     "cors": "^2.8.5",
