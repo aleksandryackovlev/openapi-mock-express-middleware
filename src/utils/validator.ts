@@ -1,5 +1,13 @@
 import Ajv from 'ajv';
 
-const ajv = new Ajv({ coerceTypes: true, unknownFormats: ['int32', 'int64', 'binary'] });
+const ajv = new Ajv({
+  strict: false,
+  coerceTypes: true,
+  formats: {
+    int32: true,
+    int64: true,
+    binary: true,
+  },
+});
 
 export default ajv;
