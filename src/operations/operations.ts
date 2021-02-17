@@ -53,7 +53,11 @@ export class Operations {
     this.operations = toPairs(api.paths as OpenAPIV3.PathsObject).reduce(
       (result: Operation[], [pathName, pathOperations]) => [
         ...result,
-        ...this.compileFromPath(pathName, pathOperations, get(api, 'components.securitySchemes')),
+        ...this.compileFromPath(
+          pathName,
+          pathOperations as OpenAPIV3.PathItemObject,
+          get(api, 'components.securitySchemes')
+        ),
       ],
       []
     );

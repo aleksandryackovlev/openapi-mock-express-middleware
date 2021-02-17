@@ -442,6 +442,49 @@ describe('Operation', () => {
         },
       });
     });
+
+    it("should convert header params' names to lower case", () => {
+      const operationWithParams = new Operation({
+        method: 'post',
+        path: '/pet/:petId',
+        generator,
+        operation: {
+          parameters: [
+            {
+              name: 'X-Api-Key',
+              in: 'header',
+              description: 'api key',
+              required: true,
+              schema: {
+                type: 'string',
+              },
+            },
+          ],
+        },
+      });
+
+      expect(operationWithParams.getParamsSchemas()).toStrictEqual({
+        header: {
+          type: 'object',
+          required: ['x-api-key'],
+          properties: {
+            'x-api-key': {
+              type: 'string',
+            },
+          },
+        },
+        query: {
+          type: 'object',
+          additionalProperties: false,
+          required: [],
+        },
+        path: {
+          type: 'object',
+          additionalProperties: false,
+          required: [],
+        },
+      });
+    });
   });
 
   describe('getBodySchema', () => {
