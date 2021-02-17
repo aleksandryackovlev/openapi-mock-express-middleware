@@ -139,10 +139,25 @@ export class Operation {
         ) {
           const prevRequired: string[] = schemas[parameter.in].required || [];
 
-          set(schemas, [parameter.in, 'properties', parameter.name], parameter.schema);
+          set(
+            schemas,
+            [
+              parameter.in,
+              'properties',
+              parameter.in === 'header' ? parameter.name.toLowerCase() : parameter.name,
+            ],
+            parameter.schema
+          );
 
           if (parameter.required) {
-            set(schemas, [parameter.in, 'required'], [...prevRequired, parameter.name]);
+            set(
+              schemas,
+              [parameter.in, 'required'],
+              [
+                ...prevRequired,
+                parameter.in === 'header' ? parameter.name.toLowerCase() : parameter.name,
+              ]
+            );
           }
         }
       });
