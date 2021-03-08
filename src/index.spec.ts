@@ -21,7 +21,13 @@ describe('createMockMiddleware', () => {
       throw new Error('exit');
     } catch (error) {
       expect(error).toBeInstanceOf(Error);
-      expect(error).toHaveProperty('message', 'OpenAPI spec not found at location');
+      expect(error).toHaveProperty(
+        'message',
+        `OpenAPI spec not found at location: ${path.resolve(
+          __dirname,
+          '../test/fixtures/petstore_not_exist.yaml'
+        )}`
+      );
     }
   });
 });
