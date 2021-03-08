@@ -21,7 +21,7 @@ describe('createMockMiddleware', () => {
       throw new Error('exit');
     } catch (error) {
       expect(error).toBeInstanceOf(Error);
-      expect(error).toHaveProperty('message', 'File with the openapi docs does not exist');
+      expect(error).toHaveProperty('message', 'OpenAPI spec not found at location');
     }
   });
 });

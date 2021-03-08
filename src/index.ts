@@ -27,7 +27,7 @@ export const createMockMiddleware = ({
   jsfCallback,
 }: MiddlewareOptions): express.Router => {
   if (!fs.existsSync(file)) {
-    throw new Error('File with the openapi docs does not exist');
+    throw new Error(`OpenAPI spec not found at location: ${file}`);
   }
 
   const router = createRouter();
