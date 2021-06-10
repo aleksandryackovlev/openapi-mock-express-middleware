@@ -15,6 +15,7 @@ export class Operations {
   operations: Operation[] | null = null;
 
   file: string;
+
   inMemory: boolean;
 
   locale: string;
