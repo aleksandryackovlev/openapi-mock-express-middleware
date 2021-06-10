@@ -35,6 +35,7 @@ export class Operations {
     callback?: JSFCallback;
   }) {
     this.file = file;
+    this.inMemory = inMemory;
     this.locale = locale;
     if (!inMemory) {
       this.watch();
