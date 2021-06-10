@@ -14,7 +14,7 @@ import { Operation, createOperation } from './operation';
 export class Operations {
   operations: Operation[] | null = null;
 
-  file: string;
+  file: string | OpenAPIV3.Document;
 
   inMemory: boolean;
 
@@ -29,7 +29,7 @@ export class Operations {
     options,
     callback,
   }: {
-    file: string;
+    file: string | OpenAPIV3.Document;
     inMemory: boolean;
     locale: string;
     options: Partial<JSFOptions>;
@@ -51,7 +51,7 @@ export class Operations {
   watch(): void {
     if (this.inMemory) return;
 
-    const watcher = chokidar.watch(path.dirname(this.file));
+    const watcher = chokidar.watch(path.dirname(this.file as string));
 
     watcher.on('all', () => this.reset());
   }
@@ -115,7 +115,7 @@ export const createOperations = ({
   options,
   callback,
 }: {
-  file: string;
+  file: string | OpenAPIV3.Document;
   inMemory: boolean;
   locale: string;
   options: Partial<JSFOptions>;
