@@ -15,6 +15,7 @@ export class Operations {
   operations: Operation[] | null = null;
 
   file: string;
+  inMemory: boolean;
 
   locale: string;
 
@@ -22,18 +23,22 @@ export class Operations {
 
   constructor({
     file,
+    inMemory,
     locale,
     options,
     callback,
   }: {
     file: string;
+    inMemory: boolean;
     locale: string;
     options: Partial<JSFOptions>;
     callback?: JSFCallback;
   }) {
     this.file = file;
     this.locale = locale;
-    this.watch();
+    if (!inMemory) {
+      this.watch();
+    }
     this.generator = createGenerator(locale, options, callback);
   }
 
@@ -42,6 +47,8 @@ export class Operations {
   }
 
   watch(): void {
+    if (this.inMemory) return;
+
     const watcher = chokidar.watch(path.dirname(this.file));
 
     watcher.on('all', () => this.reset());
@@ -101,12 +108,14 @@ export class Operations {
 
 export const createOperations = ({
   file,
+  inMemory,
   locale,
   options,
   callback,
 }: {
   file: string;
+  inMemory: boolean;
   locale: string;
   options: Partial<JSFOptions>;
   callback?: JSFCallback;
-}): Operations => new Operations({ file, locale, options, callback });
+}): Operations => new Operations({ file, inMemory, locale, options, callback });

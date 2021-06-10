@@ -15,6 +15,7 @@ import { JSFOptions, JSFCallback } from './utils';
 
 export interface MiddlewareOptions {
   file: string;
+  inMemory?: boolean;
   locale?: string;
   options?: Partial<JSFOptions>;
   jsfCallback?: JSFCallback;
@@ -22,16 +23,19 @@ export interface MiddlewareOptions {
 
 export const createMockMiddleware = ({
   file,
+  inMemory = false,
   locale = 'en',
   options = {},
   jsfCallback,
 }: MiddlewareOptions): express.Router => {
-  if (!fs.existsSync(file)) {
+  if (!inMemory && !fs.existsSync(file)) {
     throw new Error(`OpenAPI spec not found at location: ${file}`);
+  } else if (inMemory && !file) {
+    throw new Error(`OpenAPI spec not provided`);
   }
 
   const router = createRouter();
-  const operations = createOperations({ file, locale, options, callback: jsfCallback });
+  const operations = createOperations({ file, inMemory, locale, options, callback: jsfCallback });
 
   router.use('/{0,}', async (req, res, next) => {
     res.locals.operation = await operations.match(req);
