@@ -73,7 +73,7 @@ export class Operations {
       createOperation({
         method,
         path: pathName,
-        operation,
+        operation: operation as OpenAPIV3.OperationObject,
         securitySchemes,
         generator: this.generator,
       })
