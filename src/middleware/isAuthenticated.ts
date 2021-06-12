@@ -59,7 +59,8 @@ const isAuthorized = (
     return next();
   }
 
-  const securityRequirements: OpenAPIV3.SecurityRequirementObject[] = res.locals.operation.getSecurityRequirements();
+  const securityRequirements: OpenAPIV3.SecurityRequirementObject[] =
+    res.locals.operation.getSecurityRequirements();
   const { securitySchemes } = res.locals.operation;
 
   if (
