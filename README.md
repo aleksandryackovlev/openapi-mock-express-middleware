@@ -35,7 +35,7 @@ const app = express();
 
 app.use(
   '/api', // root path for the mock server
-  createMockMiddleware({ file: '/absolute/path/to/your/openapi/spec.yml' }),
+  createMockMiddleware({ spec: '/absolute/path/to/your/openapi/spec.yml' }),
 );
 
 app.listen(80, () => console.log('Server listening on port 80'));
@@ -53,7 +53,7 @@ const app = express();
 app.use(
   '/api',
   createMockMiddleware({
-    file: '/absolute/path/to/your/openapi/spec.yml',
+    spec: '/absolute/path/to/your/openapi/spec.yml', // string or OpenAPIV3.Document object
     locale: 'ru', // json-schema-faker locale, default to 'en'
     options: { // json-schema-faker options
       alwaysFakeOptionals: true,

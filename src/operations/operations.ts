@@ -14,24 +14,24 @@ import { Operation, createOperation } from './operation';
 export class Operations {
   operations: Operation[] | null = null;
 
-  file: string;
+  spec: string | OpenAPIV3.Document;
 
   locale: string;
 
   generator: JSF;
 
   constructor({
-    file,
+    spec,
     locale,
     options,
     callback,
   }: {
-    file: string;
+    spec: string | OpenAPIV3.Document;
     locale: string;
     options: Partial<JSFOptions>;
     callback?: JSFCallback;
   }) {
-    this.file = file;
+    this.spec = spec;
     this.locale = locale;
     this.watch();
     this.generator = createGenerator(locale, options, callback);
@@ -42,13 +42,15 @@ export class Operations {
   }
 
   watch(): void {
-    const watcher = chokidar.watch(path.dirname(this.file));
+    if (typeof this.spec !== 'string') return;
+
+    const watcher = chokidar.watch(path.dirname(this.spec));
 
     watcher.on('all', () => this.reset());
   }
 
   async compile(): Promise<void> {
-    const api = await SwaggerParser.dereference(this.file);
+    const api = await SwaggerParser.dereference(this.spec);
 
     this.operations = toPairs(api.paths as OpenAPIV3.PathsObject).reduce(
       (result: Operation[], [pathName, pathOperations]) => [
@@ -73,7 +75,7 @@ export class Operations {
       createOperation({
         method,
         path: pathName,
-        operation,
+        operation: operation as OpenAPIV3.OperationObject,
         securitySchemes,
         generator: this.generator,
       })
@@ -100,13 +102,13 @@ export class Operations {
 }
 
 export const createOperations = ({
-  file,
+  spec,
   locale,
   options,
   callback,
 }: {
-  file: string;
+  spec: string | OpenAPIV3.Document;
   locale: string;
   options: Partial<JSFOptions>;
   callback?: JSFCallback;
-}): Operations => new Operations({ file, locale, options, callback });
+}): Operations => new Operations({ spec, locale, options, callback });
