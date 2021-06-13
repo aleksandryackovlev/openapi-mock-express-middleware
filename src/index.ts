@@ -15,7 +15,7 @@ import {
 import { JSFOptions, JSFCallback } from './utils';
 
 export interface MiddlewareOptions {
-  file: string;
+  file?: string;
   spec?: string | OpenAPIV3.Document;
   locale?: string;
   options?: Partial<JSFOptions>;
@@ -35,6 +35,8 @@ export const createMockMiddleware = ({
   const docSpec = !spec ? file : spec;
   if (typeof docSpec === 'string' && !fs.existsSync(docSpec)) {
     throw new Error(`OpenAPI spec not found at location: ${docSpec}`);
+  } else if (docSpec === undefined) {
+    throw new Error(`OpenAPI spec not provided`);
   }
 
   const router = createRouter();
