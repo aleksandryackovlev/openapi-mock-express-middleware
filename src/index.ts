@@ -1,6 +1,7 @@
 import fs from 'fs';
 
 import express from 'express';
+import type { OpenAPIV3 } from 'openapi-types';
 
 import createRouter from './router';
 import { createOperations } from './operations';
@@ -14,24 +15,32 @@ import {
 import { JSFOptions, JSFCallback } from './utils';
 
 export interface MiddlewareOptions {
-  file: string;
+  file?: string;
+  spec?: string | OpenAPIV3.Document;
   locale?: string;
   options?: Partial<JSFOptions>;
   jsfCallback?: JSFCallback;
 }
 
 export const createMockMiddleware = ({
+  /**
+   * @deprecated
+   */
   file,
+  spec,
   locale = 'en',
   options = {},
   jsfCallback,
 }: MiddlewareOptions): express.Router => {
-  if (!fs.existsSync(file)) {
-    throw new Error(`OpenAPI spec not found at location: ${file}`);
+  const docSpec = !spec ? file : spec;
+  if (typeof docSpec === 'string' && !fs.existsSync(docSpec)) {
+    throw new Error(`OpenAPI spec not found at location: ${docSpec}`);
+  } else if (docSpec === undefined) {
+    throw new Error(`OpenAPI spec not provided`);
   }
 
   const router = createRouter();
-  const operations = createOperations({ file, locale, options, callback: jsfCallback });
+  const operations = createOperations({ spec: docSpec, locale, options, callback: jsfCallback });
 
   router.use('/{0,}', async (req, res, next) => {
     res.locals.operation = await operations.match(req);
