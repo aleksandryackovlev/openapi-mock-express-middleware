@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.0.0](https://github.com/aleksandryackovlev/openapi-mock-express-middleware/compare/v2.0.2...v3.0.0) (2021-06-13)
+
+
+### Bug Fixes
+
+* **eslint:** fix typo in is authenticated middleware ([fb06b82](https://github.com/aleksandryackovlev/openapi-mock-express-middleware/commit/fb06b8247ac0f4d9c9b8c1d8d8ffd5f51463b9cd))
+* **tsconfig:** temporarily skip lib checks ([84616f8](https://github.com/aleksandryackovlev/openapi-mock-express-middleware/commit/84616f8566b30d04fb0870fc6315987d4be6139c))
+
 ### [2.0.2](https://github.com/aleksandryackovlev/openapi-mock-express-middleware/compare/v2.0.1...v2.0.2) (2021-03-08)
 
 ### [2.0.1](https://github.com/aleksandryackovlev/openapi-mock-express-middleware/compare/v2.0.0...v2.0.1) (2021-02-17)
