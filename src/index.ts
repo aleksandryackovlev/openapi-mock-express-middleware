@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import fs from 'fs';
 
 import express from 'express';
@@ -32,6 +33,10 @@ export const createMockMiddleware = ({
   options = {},
   jsfCallback,
 }: MiddlewareOptions): express.Router => {
+  if (file) {
+    console.warn('The file option is deprecated. Please, use spec option instead.');
+  }
+
   const docSpec = !spec ? file : spec;
   if (typeof docSpec === 'string' && !fs.existsSync(docSpec)) {
     throw new Error(`OpenAPI spec not found at location: ${docSpec}`);
