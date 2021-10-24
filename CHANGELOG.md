@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [3.0.1](https://github.com/aleksandryackovlev/openapi-mock-express-middleware/compare/v3.0.0...v3.0.1) (2021-10-24)
+
+
+### Bug Fixes
+
+* **validator:** set coerceTypes to parse arrays ([e0441d8](https://github.com/aleksandryackovlev/openapi-mock-express-middleware/commit/e0441d8abfa7ffe0d307413d8b96a40add0e1b63))
+
 ## [3.0.0](https://github.com/aleksandryackovlev/openapi-mock-express-middleware/compare/v2.0.2...v3.0.0) (2021-06-13)
 
 
