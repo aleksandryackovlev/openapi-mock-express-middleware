@@ -88,10 +88,8 @@ paths:
                 properties:
                   name:
                     type: string
-                    faker: name.findName
                   photo:
                     type: string
-                    faker: image.imageUrl
 
   /pet/{petId}/uploadImage:
     post:

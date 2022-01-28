@@ -60,11 +60,11 @@ app.use(
       useExamplesValue: true,
       // ...
     },
-    jsfCallback: (jsf, faker) => {
+    jsfCallback: (jsf) => {
     	// function where you can extend json-schema-faker
     	...
     }
-  }),
+  }),F
 );
 
 app.listen(80, () => console.log('Server listening on port 80'));

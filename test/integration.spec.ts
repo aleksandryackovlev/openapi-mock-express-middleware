@@ -31,7 +31,6 @@ describe('middleware', () => {
 
     expect(response.body).toHaveProperty('photo');
     expect(typeof response.body.photo).toBe('string');
-    expect(response.body.photo.startsWith('http')).toBe(true);
   });
 
   it('should return values of the given faker type if they are specified', async () => {

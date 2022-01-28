@@ -1,9 +1,8 @@
 import jsf, { JSF, JSFOptions } from 'json-schema-faker';
-import faker from 'faker';
 
 export { JSONSchema, JSFOptions, JSF } from 'json-schema-faker';
 
-export type JSFCallback = (jsfInstance: JSF, fakerObject: typeof faker) => void;
+export type JSFCallback = (jsfInstance: JSF) => void;
 
 const defaultOptions = {
   optionalsProbability: 0.5,
@@ -31,12 +30,7 @@ export const createGenerator: (
     ...options,
   });
 
-  jsf.extend('faker', () => {
-    faker.locale = locale;
-    return faker;
-  });
-
-  callback(jsf, faker);
+  callback(jsf);
 
   jsf.define('example', (value) => {
     return value;
