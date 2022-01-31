@@ -71,13 +71,15 @@ export class Operations {
     pathOperations: OpenAPIV3.PathItemObject,
     securitySchemes?: { [key: string]: OpenAPIV3.SecuritySchemeObject }
   ): Operation[] {
-    return toPairs(pathOperations).map(([method, operation]) =>
+    const { parameters, ...rest } = pathOperations;
+    return toPairs(rest).map(([method, operation]) =>
       createOperation({
         method,
         path: pathName,
         operation: operation as OpenAPIV3.OperationObject,
         securitySchemes,
         generator: this.generator,
+        parentParams: parameters,
       })
     );
   }
