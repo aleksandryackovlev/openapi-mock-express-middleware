@@ -2,6 +2,30 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [4.0.1](https://github.com/aleksandryackovlev/openapi-mock-express-middleware/compare/v3.0.2...v4.0.1) (2022-01-31)
+
+
+### ⚠ BREAKING CHANGES
+
+* **generator:** The generation of `examples` can be overwritten
+* **router:** Error handling must be confgured outside of the middleware.
+* **options:** The deprecated `file` option is removed. The `locale` option is removed because
+Faker.js is no longer used inside the middleware be default and should be configured separetely.
+`jsfCallback` is renamed into `configure`.
+
+### Features
+
+* **generator:** allow to overwrite the behavior for `examples` ([1466fed](https://github.com/aleksandryackovlev/openapi-mock-express-middleware/commit/1466fedd5efd61c1e6404c24c172432b6a8da6f8))
+
+
+### Bug Fixes
+
+* **operations:** support parameters in the path section ([90cbae6](https://github.com/aleksandryackovlev/openapi-mock-express-middleware/commit/90cbae6371800ebf8256bf22da1f4d725637d078)), closes [#37](https://github.com/aleksandryackovlev/openapi-mock-express-middleware/issues/37)
+
+
+* **options:** refactor middleware options ([c7fdf85](https://github.com/aleksandryackovlev/openapi-mock-express-middleware/commit/c7fdf85c304ca7066c44154738c530e207edfdbc))
+* **router:** remove error handlers from the router ([3af3fc7](https://github.com/aleksandryackovlev/openapi-mock-express-middleware/commit/3af3fc77d88a1c03eed1d32754eb813f786ddfa4))
+
 ### [3.0.2](https://github.com/aleksandryackovlev/openapi-mock-express-middleware/compare/v3.0.1...v3.0.2) (2021-10-27)
 
 ### [3.0.1](https://github.com/aleksandryackovlev/openapi-mock-express-middleware/compare/v3.0.0...v3.0.1) (2021-10-24)
