@@ -45,13 +45,5 @@ export const createMockMiddleware = ({
     return res.locals.operation ? res.locals.operation.generateResponse(req, res) : next();
   });
 
-  router.use((req, res) => {
-    res.status(404).send({ message: 'Not found' });
-  });
-
-  router.use((err: Error, req: express.Request, res: express.Response): void => {
-    res.status(500).send({ message: 'Something broke!' });
-  });
-
   return router;
 };
