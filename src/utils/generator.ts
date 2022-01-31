@@ -29,13 +29,13 @@ export const createGenerator: (options?: Partial<JSFOptions>, callback?: JSFCall
     ...options,
   });
 
-  callback(jsf);
-
   jsf.define('example', (value) => {
     return value;
   });
 
   jsf.define('examples', handleExamples);
+
+  callback(jsf);
 
   return jsf;
 };
