@@ -1,3 +1,5 @@
+import { OpenAPIV3 } from 'openapi-types';
+
 import { Operation } from './operation';
 import { createGenerator } from '../utils';
 
@@ -62,7 +64,7 @@ describe('Operation', () => {
         method: 'get',
         generator,
         path: '/pet/:petId',
-        operation: {},
+        operation: {} as OpenAPIV3.OperationObject,
       });
 
       expect(operation.getResponseStatus()).toBe(200);
@@ -383,6 +385,7 @@ describe('Operation', () => {
               },
             },
           ],
+          responses: {},
         },
       });
 
@@ -390,7 +393,7 @@ describe('Operation', () => {
         method: 'post',
         path: '/pet/:petId',
         generator,
-        operation: {},
+        operation: {} as OpenAPIV3.OperationObject,
       });
 
       expect(operationWithParams.getParamsSchemas()).toStrictEqual({
@@ -460,6 +463,7 @@ describe('Operation', () => {
               },
             },
           ],
+          responses: {},
         },
       });
 
@@ -512,7 +516,8 @@ describe('Operation', () => {
               },
             },
           },
-        },
+          responses: {},
+        } as OpenAPIV3.OperationObject,
       });
 
       expect(operation.getBodySchema('application/json')).toStrictEqual({
