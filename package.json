@@ -1,7 +1,7 @@
 {
   "name": "openapi-mock-express-middleware",
-  "version": "3.0.2",
-  "description": "Generates an express mock server from an Open API spec",
+  "version": "4.0.1",
+  "description": "Generates express mock-servers from OpenAPI specs",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
   "scripts": {
@@ -31,13 +31,9 @@
     "openapi",
     "swagger",
     "typescript",
-    "fetch",
-    "client",
-    "sdk",
     "mock",
     "server",
-    "express",
-    "webpack"
+    "express"
   ],
   "author": "Aleksandr Yackovlev <aleksandryackovlev@yandex.ru>",
   "license": "MIT",
