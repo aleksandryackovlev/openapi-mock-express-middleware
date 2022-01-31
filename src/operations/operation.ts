@@ -29,20 +29,25 @@ export class Operation {
 
   securitySchemes: { [key: string]: OpenAPIV3.SecuritySchemeObject } | null;
 
+  parentParams: (OpenAPIV3.ReferenceObject | OpenAPIV3.ParameterObject)[] | null;
+
   constructor({
     method,
     path,
     operation,
     securitySchemes,
     generator,
+    parentParams,
   }: {
     path: string;
     method: string;
     operation: OpenAPIV3.OperationObject;
     generator: JSF;
     securitySchemes?: { [key: string]: OpenAPIV3.SecuritySchemeObject };
+    parentParams?: (OpenAPIV3.ReferenceObject | OpenAPIV3.ParameterObject)[];
   }) {
     this.pathPattern = path.replace(/\{([^/}]+)\}/g, (p1: string, p2: string): string => `:${p2}`);
+    this.parentParams = parentParams || null;
 
     this.method = method.toUpperCase();
     this.operation = operation;
@@ -127,7 +132,17 @@ export class Operation {
       },
     };
 
-    const parameters = get(this.operation, ['parameters']);
+    let parameters: (OpenAPIV3.ReferenceObject | OpenAPIV3.ParameterObject)[] = [];
+
+    if (this.parentParams) {
+      parameters = [...this.parentParams];
+    }
+
+    const localParams = get(this.operation, ['parameters']);
+
+    if (localParams) {
+      parameters = [...parameters, ...localParams];
+    }
 
     if (parameters) {
       parameters.forEach((parameter) => {
@@ -186,12 +201,14 @@ export const createOperation = ({
   operation,
   generator,
   securitySchemes,
+  parentParams,
 }: {
   path: string;
   method: string;
   operation: OpenAPIV3.OperationObject;
   generator: JSF;
   securitySchemes?: { [key: string]: OpenAPIV3.SecuritySchemeObject };
+  parentParams?: (OpenAPIV3.ReferenceObject | OpenAPIV3.ParameterObject)[];
 }): Operation =>
   new Operation({
     method,
@@ -199,4 +216,5 @@ export const createOperation = ({
     operation,
     generator,
     securitySchemes,
+    parentParams,
   });

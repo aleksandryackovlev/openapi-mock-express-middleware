@@ -31,7 +31,6 @@ describe('middleware', () => {
 
     expect(response.body).toHaveProperty('photo');
     expect(typeof response.body.photo).toBe('string');
-    expect(response.body.photo.startsWith('http')).toBe(true);
   });
 
   it('should return values of the given faker type if they are specified', async () => {
@@ -44,13 +43,6 @@ describe('middleware', () => {
 
     expect(response.body).toHaveProperty('name');
     expect(typeof response.body.name).toBe('string');
-  });
-
-  it('should return an 404 error response if the given url does not exist', async () => {
-    const response = await request.get('/api/pet-not-exist/2');
-
-    expect(response.status).toBe(404);
-    expect(response.body).toHaveProperty('message', 'Not found');
   });
 
   it('should return an 400 error response if request body is not valid', async () => {

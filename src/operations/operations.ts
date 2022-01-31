@@ -16,25 +16,20 @@ export class Operations {
 
   spec: string | OpenAPIV3.Document;
 
-  locale: string;
-
   generator: JSF;
 
   constructor({
     spec,
-    locale,
     options,
     callback,
   }: {
     spec: string | OpenAPIV3.Document;
-    locale: string;
     options: Partial<JSFOptions>;
     callback?: JSFCallback;
   }) {
     this.spec = spec;
-    this.locale = locale;
     this.watch();
-    this.generator = createGenerator(locale, options, callback);
+    this.generator = createGenerator(options, callback);
   }
 
   reset(): void {
@@ -71,13 +66,15 @@ export class Operations {
     pathOperations: OpenAPIV3.PathItemObject,
     securitySchemes?: { [key: string]: OpenAPIV3.SecuritySchemeObject }
   ): Operation[] {
-    return toPairs(pathOperations).map(([method, operation]) =>
+    const { parameters, ...rest } = pathOperations;
+    return toPairs(rest).map(([method, operation]) =>
       createOperation({
         method,
         path: pathName,
         operation: operation as OpenAPIV3.OperationObject,
         securitySchemes,
         generator: this.generator,
+        parentParams: parameters,
       })
     );
   }
@@ -103,12 +100,10 @@ export class Operations {
 
 export const createOperations = ({
   spec,
-  locale,
   options,
   callback,
 }: {
   spec: string | OpenAPIV3.Document;
-  locale: string;
   options: Partial<JSFOptions>;
   callback?: JSFCallback;
-}): Operations => new Operations({ spec, locale, options, callback });
+}): Operations => new Operations({ spec, options, callback });

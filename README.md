@@ -8,14 +8,13 @@
 </div>
 
 [![npm][npm]][npm-url]
-[![deps][deps]][deps-url]
-[![Build Status](https://travis-ci.org/aleksandryackovlev/openapi-mock-express-middleware.svg?branch=master)](https://travis-ci.org/aleksandryackovlev/openapi-mock-express-middleware)
+[![Build Status](https://github.com/aleksandryackovlev/openapi-mock-express-middleware/workflows/build/badge.svg)](https://github.com/aleksandryackovlev/openapi-mock-express-middleware/actions)
 [![codecov](https://codecov.io/gh/aleksandryackovlev/openapi-mock-express-middleware/branch/master/graph/badge.svg)](https://codecov.io/gh/aleksandryackovlev/openapi-mock-express-middleware)
 [![size](https://packagephobia.now.sh/badge?p=openapi-mock-express-middleware)](https://packagephobia.now.sh/result?p=openapi-mock-express-middleware)
 
 # openapi-mock-express-middleware
 
-Generates an express mock server from an [Open API 3.0](https://swagger.io/docs/specification/about/) documentation.
+Generates express mock-servers from [Open API 3.0](https://swagger.io/docs/specification/about/) specs.
 
 ## Installation
 
@@ -42,7 +41,7 @@ app.listen(80, () => console.log('Server listening on port 80'));
 ```
 
 ### Advanced Config
-The middleware uses [json-schmea-faker](https://github.com/json-schema-faker/json-schema-faker) under the hood. To configure it, you can pass locale and the options object to the factory function. (The full list of available options can be seen [here](https://github.com/json-schema-faker/json-schema-faker/tree/master/docs#available-options))
+The middleware uses [json-schmea-faker](https://github.com/json-schema-faker/json-schema-faker) under the hood. To configure it, you can pass the options object to the factory function. (The full list of available options can be seen [here](https://github.com/json-schema-faker/json-schema-faker/tree/master/docs#available-options))
 
 ```javascript
 const express = require('express');
@@ -54,13 +53,12 @@ app.use(
   '/api',
   createMockMiddleware({
     spec: '/absolute/path/to/your/openapi/spec.yml', // string or OpenAPIV3.Document object
-    locale: 'ru', // json-schema-faker locale, default to 'en'
     options: { // json-schema-faker options
       alwaysFakeOptionals: true,
       useExamplesValue: true,
       // ...
     },
-    jsfCallback: (jsf, faker) => {
+    configure: (jsf) => {
     	// function where you can extend json-schema-faker
     	...
     }
@@ -105,10 +103,35 @@ paths:
 }
 ```
 
-### Faker generated responses
-In addition faker functions can be specified for data generation. The list of all available function can be found in the [faker documentation](https://github.com/marak/Faker.js/#api-methods).
+### Faker or Chance generated responses
+In addition `faker.js` or `chance.js` methods can be specified for data generation. In order to use these generators you have to configure middleware through the `configure` option of the factory function.
 
-**doc.yml**
+```javascript
+const express = require('express');
+const { createMockMiddleware } = require('openapi-mock-express-middleware');
+import faker from '@faker-js/faker';
+import Chance from 'chance';
+
+const app = express();
+
+app.use(
+  '/api',
+  createMockMiddleware({
+    spec: '/absolute/path/to/your/openapi/spec.yml',
+    configure: (jsf) => {
+    	jsf.extend('faker', () => faker);
+	jsf.extend('chance', () => new Chance());
+    }
+  }),
+);
+
+app.listen(80, () => console.log('Server listening on port 80'));
+
+```
+
+After that you can use 'x-faker' and/or 'x-chance' attributes in your openapi specs.
+
+**spec.yml**
 ```
 ...
 paths:
@@ -130,6 +153,11 @@ paths:
                   name:
                     type: string
                     x-faker: name.findName
+                  email:
+                    type: string
+                    x-chance:
+                      email:
+                        domain: fake.com	  
 ...
 ```
 
@@ -137,7 +165,8 @@ paths:
 ```javascript
 {
   id: '8c4a4ed2-efba-4913-9604-19a27f36f322',
-  name: 'Mr. Braxton Dickens'.
+  name: 'Mr. Braxton Dickens',
+  email: 'giigjom@fake.com'
 }
 ```
 
@@ -224,6 +253,34 @@ paths:
 }
 ```
 
+If you want to use some other logic for generating responses from the `examples` attributes you can easily implement it by overwriting this behavior in the `configure` option of the middleware's factory function:
+
+```javascript
+const express = require('express');
+const { createMockMiddleware } = require('openapi-mock-express-middleware');
+
+const app = express();
+
+app.use(
+  '/api',
+  createMockMiddleware({
+    spec: '/absolute/path/to/your/openapi/spec.yml',
+    configure: (jsf) => {
+      jsf.define('examples', (value) => {
+        if (typeof value === 'object' && value !== null && Object.keys(value).length) {
+          return value[Object.keys(value)[0]].value;
+        }
+
+        return '';
+      });
+    }
+  }),
+);
+
+app.listen(80, () => console.log('Server listening on port 80'));
+
+```
+
 ## Contributing
 
 Please take a moment to read our contributing guidelines if you haven't yet done so.
@@ -237,5 +294,3 @@ Please take a moment to read our contributing guidelines if you haven't yet done
 
 [npm]: https://img.shields.io/npm/v/openapi-mock-express-middleware.svg
 [npm-url]: https://npmjs.com/package/openapi-mock-express-middleware
-[deps]: https://david-dm.org/aleksandryackovlev/openapi-mock-express-middleware.svg
-[deps-url]: https://david-dm.org/aleksandryackovlev/openapi-mock-express-middleware
