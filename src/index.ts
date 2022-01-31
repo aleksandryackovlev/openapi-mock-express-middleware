@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 import fs from 'fs';
 
 import express from 'express';
@@ -16,36 +15,24 @@ import {
 import { JSFOptions, JSFCallback } from './utils';
 
 export interface MiddlewareOptions {
-  file?: string;
   spec?: string | OpenAPIV3.Document;
-  locale?: string;
   options?: Partial<JSFOptions>;
-  jsfCallback?: JSFCallback;
+  configure?: JSFCallback;
 }
 
 export const createMockMiddleware = ({
-  /**
-   * @deprecated
-   */
-  file,
   spec,
-  locale = 'en',
   options = {},
-  jsfCallback,
+  configure,
 }: MiddlewareOptions): express.Router => {
-  if (file) {
-    console.warn('The file option is deprecated. Please, use spec option instead.');
-  }
-
-  const docSpec = !spec ? file : spec;
-  if (typeof docSpec === 'string' && !fs.existsSync(docSpec)) {
-    throw new Error(`OpenAPI spec not found at location: ${docSpec}`);
-  } else if (docSpec === undefined) {
+  if (typeof spec === 'string' && !fs.existsSync(spec)) {
+    throw new Error(`OpenAPI spec not found at location: ${spec}`);
+  } else if (spec === undefined) {
     throw new Error(`OpenAPI spec not provided`);
   }
 
   const router = createRouter();
-  const operations = createOperations({ spec: docSpec, locale, options, callback: jsfCallback });
+  const operations = createOperations({ spec, options, callback: configure });
 
   router.use('/{0,}', async (req, res, next) => {
     res.locals.operation = await operations.match(req);
