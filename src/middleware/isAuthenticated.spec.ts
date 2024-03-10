@@ -169,7 +169,7 @@ describe('isAuthenticated', () => {
           cookies: {
             authKey: 'test',
           },
-        } as express.Request)
+        } as unknown as express.Request)
       ).toBe(false);
 
       expect(
@@ -177,7 +177,7 @@ describe('isAuthenticated', () => {
           cookies: {
             someOtherKey: 'test',
           },
-        } as express.Request)
+        } as unknown as express.Request)
       ).toBe(true);
     });
 
@@ -193,7 +193,7 @@ describe('isAuthenticated', () => {
           cookies: {
             authKey: 'test',
           },
-        } as express.Request)
+        } as unknown as express.Request)
       ).toBe(false);
 
       expect(
@@ -201,7 +201,7 @@ describe('isAuthenticated', () => {
           cookies: {
             someOtherKey: 'test',
           },
-        } as express.Request)
+        } as unknown as express.Request)
       ).toBe(false);
     });
   });
