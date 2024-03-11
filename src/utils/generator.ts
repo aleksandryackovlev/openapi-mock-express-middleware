@@ -35,6 +35,7 @@ export const createGenerator: (options?: Partial<JSFOptions>, callback?: JSFCall
   generator.option(applyedOptions);
 
   if (applyedOptions.useExamplesValue) {
+    /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
     generator.define('example', (value: any) => value);
     generator.define('examples', handleExamples);
   }
