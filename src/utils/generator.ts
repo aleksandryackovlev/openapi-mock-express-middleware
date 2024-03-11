@@ -1,4 +1,5 @@
 import jsf, { JSF, JSFOptions } from 'json-schema-faker';
+import { cloneDeep } from 'lodash';
 
 export { JSONSchema, JSFOptions, JSF } from 'json-schema-faker';
 
@@ -6,6 +7,7 @@ export type JSFCallback = (jsfInstance: JSF) => void;
 
 const defaultOptions = {
   optionalsProbability: 0.5,
+  useExamplesValue: true,
 };
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
@@ -24,19 +26,22 @@ export const createGenerator: (options?: Partial<JSFOptions>, callback?: JSFCall
   options = defaultOptions,
   callback = <JSFCallback>(() => {})
 ) => {
-  jsf.option({
+  const applyedOptions = {
     ...defaultOptions,
     ...options,
-  });
+  };
 
-  jsf.define('example', (value) => {
-    return value;
-  });
+  const generator = cloneDeep(jsf);
+  generator.option(applyedOptions);
 
-  jsf.define('examples', handleExamples);
+  if (applyedOptions.useExamplesValue) {
+    /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
+    generator.define('example', (value: any) => value);
+    generator.define('examples', handleExamples);
+  }
 
-  callback(jsf);
+  callback(generator);
 
-  return jsf;
+  return generator;
 };
 /* eslint-enable @typescript-eslint/no-empty-function */

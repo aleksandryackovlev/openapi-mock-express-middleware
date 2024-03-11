@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [4.1.1](https://github.com/aleksandryackovlev/openapi-mock-express-middleware/compare/v4.1.0...v4.1.1) (2024-03-11)
+
+## [4.1.0](https://github.com/aleksandryackovlev/openapi-mock-express-middleware/compare/v4.0.1...v4.1.0) (2024-03-11)
+
+
+### Bug Fixes
+
+* **generator:** do not use example values if the useExampleValues option is set to false ([953af41](https://github.com/aleksandryackovlev/openapi-mock-express-middleware/commit/953af410d18de15969a35146cea56285548836b8))
+
 ### [4.0.1](https://github.com/aleksandryackovlev/openapi-mock-express-middleware/compare/v3.0.2...v4.0.1) (2022-01-31)
 
 
