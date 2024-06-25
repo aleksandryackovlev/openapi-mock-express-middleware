@@ -12,23 +12,29 @@ const defaultOptions = {
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
-export const handleExamples = (value: any): any => {
-  if (typeof value === 'object' && value !== null && Object.keys(value).length) {
-    return value[Object.keys(value)[0]].value;
-  }
+export const handleExamples =
+  (randomizeExamples: boolean) =>
+  (value: any): any => {
+    if (typeof value === 'object' && value !== null && Object.keys(value).length) {
+      return randomizeExamples
+        ? value[Object.keys(value)[Math.floor(Math.random() * Object.keys(value).length)]].value
+        : value[Object.keys(value)[0]].value;
+    }
 
-  return '';
-};
+    return '';
+  };
 /* eslint-enable @typescript-eslint/no-explicit-any */
 
 /* eslint-disable @typescript-eslint/no-empty-function */
-export const createGenerator: (options?: Partial<JSFOptions>, callback?: JSFCallback) => JSF = (
-  options = defaultOptions,
-  callback = <JSFCallback>(() => {})
-) => {
+export const createGenerator: (
+  options?: Partial<JSFOptions & { randomizeExamples: boolean }>,
+  callback?: JSFCallback
+) => JSF = (options = defaultOptions, callback = <JSFCallback>(() => {})) => {
+  const { randomizeExamples, ...jsfOptions } = options;
+
   const applyedOptions = {
     ...defaultOptions,
-    ...options,
+    ...jsfOptions,
   };
 
   const generator = cloneDeep(jsf);
@@ -37,7 +43,7 @@ export const createGenerator: (options?: Partial<JSFOptions>, callback?: JSFCall
   if (applyedOptions.useExamplesValue) {
     /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
     generator.define('example', (value: any) => value);
-    generator.define('examples', handleExamples);
+    generator.define('examples', handleExamples(!!randomizeExamples));
   }
 
   callback(generator);
