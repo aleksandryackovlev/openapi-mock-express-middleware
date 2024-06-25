@@ -56,6 +56,7 @@ app.use(
     options: { // json-schema-faker options
       alwaysFakeOptionals: true,
       useExamplesValue: true,
+      randomizeExamples: true, // choose a random example from the examples object; when set to false (default) the first example is used
       // ...
     },
     configure: (jsf) => {
