@@ -4,7 +4,7 @@ describe('generator', () => {
   describe('handleExamples', () => {
     it('should return the first example in the given examples object', () => {
       expect(
-        handleExamples({
+        handleExamples(false)({
           first: {
             value: {
               id: 3,
@@ -20,7 +20,7 @@ describe('generator', () => {
     });
 
     it('should return an empty string on incorrect examples', () => {
-      expect(handleExamples('string')).toBe('');
+      expect(handleExamples(false)('string')).toBe('');
     });
   });
 });
