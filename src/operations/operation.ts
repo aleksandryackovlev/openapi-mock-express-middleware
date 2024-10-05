@@ -54,7 +54,8 @@ export class Operation {
     this.securitySchemes = securitySchemes || null;
     this.generator = generator;
 
-    this.pathRegexp = pathToRegexp(this.pathPattern);
+    const { regexp } = pathToRegexp(this.pathPattern);
+    this.pathRegexp = regexp;
   }
 
   getResponseStatus(): number {

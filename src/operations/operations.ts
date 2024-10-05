@@ -11,6 +11,8 @@ import { createGenerator, JSFOptions, JSF, JSFCallback } from '../utils';
 
 import { Operation, createOperation } from './operation';
 
+type SecuritySchemes = { [key: string]: OpenAPIV3.SecuritySchemeObject };
+
 export class Operations {
   operations: Operation[] | null = null;
 
@@ -53,7 +55,7 @@ export class Operations {
         ...this.compileFromPath(
           pathName,
           pathOperations as OpenAPIV3.PathItemObject,
-          get(api, 'components.securitySchemes')
+          get(api, 'components.securitySchemes') as SecuritySchemes
         ),
       ],
       []
@@ -64,7 +66,7 @@ export class Operations {
   compileFromPath(
     pathName: string,
     pathOperations: OpenAPIV3.PathItemObject,
-    securitySchemes?: { [key: string]: OpenAPIV3.SecuritySchemeObject }
+    securitySchemes?: SecuritySchemes
   ): Operation[] {
     const { parameters, ...rest } = pathOperations;
     return toPairs(rest).map(([method, operation]) =>
