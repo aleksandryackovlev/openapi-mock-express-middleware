@@ -25,6 +25,8 @@ export class Operation {
 
   pathPattern: string;
 
+  path: string;
+
   generator: JSF;
 
   securitySchemes: { [key: string]: OpenAPIV3.SecuritySchemeObject } | null;
@@ -51,6 +53,7 @@ export class Operation {
 
     this.method = method.toUpperCase();
     this.operation = operation;
+    this.path = path;
     this.securitySchemes = securitySchemes || null;
     this.generator = generator;
 

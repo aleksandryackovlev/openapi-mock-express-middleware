@@ -36,6 +36,10 @@ export const createMockMiddleware = ({
 
   router.use('/{0,}', async (req, res, next) => {
     res.locals.operation = await operations.match(req);
+    res.locals.operations = {
+      ...(res.locals.operations ? res.locals.operations : {}),
+      [spec.toString()]: operations,
+    };
     next();
   });
 
