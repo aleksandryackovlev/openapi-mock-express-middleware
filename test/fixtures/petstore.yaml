@@ -55,9 +55,6 @@ paths:
                   photo:
                     type: string
                     example: inline example photo
-                example:
-                    name: single first example name
-                    photo: http://some-url-first.com
                 examples:
                   first:
                     value:
