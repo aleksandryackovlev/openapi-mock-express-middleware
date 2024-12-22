@@ -54,7 +54,7 @@
     "chokidar": "^4.0.1",
     "cookie-parser": "^1.4.6",
     "express": "^4.21.0",
-    "json-schema-faker": "0.5.0-rcv.41",
+    "json-schema-faker": "0.5.8",
     "lodash": "^4.17.20",
     "method-override": "^3.0.0",
     "openapi-types": "^12.1.3",
