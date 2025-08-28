@@ -7,7 +7,7 @@ import { Request } from 'express';
 import SwaggerParser from '@apidevtools/swagger-parser';
 import { get, toPairs } from 'lodash';
 
-import { createGenerator, JSFOptions, JSF, JSFCallback } from '../utils';
+import { createGenerator, JSFOptions, JSF, JSFCallback, expressRouteComparator } from '../utils';
 
 import { Operation, createOperation } from './operation';
 
@@ -49,17 +49,19 @@ export class Operations {
   async compile(): Promise<void> {
     const api = await SwaggerParser.dereference(this.spec);
 
-    this.operations = toPairs(api.paths as OpenAPIV3.PathsObject).reduce(
-      (result: Operation[], [pathName, pathOperations]) => [
-        ...result,
-        ...this.compileFromPath(
-          pathName,
-          pathOperations as OpenAPIV3.PathItemObject,
-          get(api, 'components.securitySchemes') as SecuritySchemes
-        ),
-      ],
-      []
-    );
+    this.operations = toPairs(api.paths as OpenAPIV3.PathsObject)
+      .sort(expressRouteComparator)
+      .reduce(
+        (result: Operation[], [pathName, pathOperations]) => [
+          ...result,
+          ...this.compileFromPath(
+            pathName,
+            pathOperations as OpenAPIV3.PathItemObject,
+            get(api, 'components.securitySchemes') as SecuritySchemes
+          ),
+        ],
+        []
+      );
   }
 
   /* eslint-disable class-methods-use-this */
