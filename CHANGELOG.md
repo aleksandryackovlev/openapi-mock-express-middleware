@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [4.4.0](https://github.com/aleksandryackovlev/openapi-mock-express-middleware/compare/v4.3.2...v4.4.0) (2025-09-22)
+
+
+### Features
+
+* **operations:** add operations sort according to express ([eeb32a6](https://github.com/aleksandryackovlev/openapi-mock-express-middleware/commit/eeb32a66423fc1508dd4af41fe3f0e7af6ca2037))
+* **operations:** make path's sorting configurable ([8809f2b](https://github.com/aleksandryackovlev/openapi-mock-express-middleware/commit/8809f2b2fc58e4e5ec3235d67ee7ee57f3937077))
+
 ### [4.3.2](https://github.com/aleksandryackovlev/openapi-mock-express-middleware/compare/v4.3.1...v4.3.2) (2024-12-22)
 
 

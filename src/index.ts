@@ -16,7 +16,7 @@ import { JSFOptions, JSFCallback } from './utils';
 
 export interface MiddlewareOptions {
   spec?: string | OpenAPIV3.Document;
-  options?: Partial<JSFOptions & { randomizeExamples: boolean }>;
+  options?: Partial<JSFOptions & { randomizeExamples: boolean; sortPaths?: boolean }>;
   configure?: JSFCallback;
 }
 

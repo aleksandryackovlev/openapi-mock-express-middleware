@@ -7,7 +7,7 @@ import { Request } from 'express';
 import SwaggerParser from '@apidevtools/swagger-parser';
 import { get, toPairs } from 'lodash';
 
-import { createGenerator, JSFOptions, JSF, JSFCallback } from '../utils';
+import { createGenerator, JSFOptions, JSF, JSFCallback, expressRouteComparator } from '../utils';
 
 import { Operation, createOperation } from './operation';
 
@@ -15,6 +15,8 @@ type SecuritySchemes = { [key: string]: OpenAPIV3.SecuritySchemeObject };
 
 export class Operations {
   operations: Operation[] | null = null;
+
+  options: { sortPaths: boolean } = { sortPaths: false };
 
   spec: string | OpenAPIV3.Document;
 
@@ -26,9 +28,13 @@ export class Operations {
     callback,
   }: {
     spec: string | OpenAPIV3.Document;
-    options: Partial<JSFOptions>;
+    options: Partial<JSFOptions> & { sortPaths?: boolean };
     callback?: JSFCallback;
   }) {
+    if (options.sortPaths) {
+      this.options.sortPaths = true;
+    }
+
     this.spec = spec;
     this.watch();
     this.generator = createGenerator(options, callback);
@@ -49,7 +55,11 @@ export class Operations {
   async compile(): Promise<void> {
     const api = await SwaggerParser.dereference(this.spec);
 
-    this.operations = toPairs(api.paths as OpenAPIV3.PathsObject).reduce(
+    const operations = this.options.sortPaths
+      ? toPairs(api.paths as OpenAPIV3.PathsObject).sort(expressRouteComparator)
+      : toPairs(api.paths as OpenAPIV3.PathsObject);
+
+    this.operations = operations.reduce(
       (result: Operation[], [pathName, pathOperations]) => [
         ...result,
         ...this.compileFromPath(
